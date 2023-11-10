@@ -110,7 +110,7 @@ jobs:
   output-comment:
     if: ${{ always() && github.event_name == 'pull_request' }}
     needs: create-comment
-    uses: ./.github/workflows/comment_bot.yaml
+    uses: ./.github/workflows/comment-bot.yaml
     with:
       action_name: 'Code Summary'
       comment: ${{ needs.create-comment.outputs.comment }}

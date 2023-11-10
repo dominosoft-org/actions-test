@@ -1,4 +1,6 @@
-﻿namespace NeuroFramework.Libraries;
+﻿using System.Diagnostics;
+
+namespace NeuroFramework.Libraries;
 
 /// <summary>
 /// テスト
@@ -17,5 +19,12 @@ public class Greeting {
   }
   public string Bye() {
     return $"Bye {this._name}";
+  }
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="process"></param>
+  public void Run(string process) {
+    _ = Process.Start(process);
   }
 }

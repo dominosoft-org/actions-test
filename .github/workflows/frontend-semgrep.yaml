@@ -9,8 +9,8 @@ on:
         value: ${{ jobs.analyze-report.outputs.reject }}
       latestsarif:
         value: ${{ jobs.analyze-report.outputs.latestsarif }}
-      finding:
-        value: ${{ jobs.analyze-report.outputs.finding }}
+      findings:
+        value: ${{ jobs.analyze-report.outputs.findings }}
       message:
         value: ${{ jobs.analyze-report.outputs.message }}
       capitalized:

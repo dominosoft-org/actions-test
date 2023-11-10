@@ -79,10 +79,23 @@ jobs:
   backend-common-any:
     needs: changes
     if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.backend-common-any == 'true' }}
-    uses: ./.github/workflows/on-backend-common-any.yaml
-    secrets:
-      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
-      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Backend Semgrep
+        id: backend-semgrep
+        uses: ./.github/workflows/backend-semgrep.yaml
+      - name: Code Analysis
+        id: code-analysis
+        uses: ./.github/workflows/code-analysis.yaml
+        with:
+          REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
+          REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      - name: Unit Test
+        id: unit-test
+        uses: ./.github/workflows/unit-test.yaml
+        with:
+          REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
+          REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
 
   backend-fakes-any:
     needs: changes

@@ -55,7 +55,19 @@ jobs:
   frontend-any:
     needs: changes
     if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.frontend-any == 'true' }}
-    uses: ./.github/workflows/on-frontend-any.yaml
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.comment.outputs.result }}
+    steps:
+      - name: Frontend Semgrep✅
+        id: frontend-semgrep
+        uses: ./.github/workflows/frontend-semgrep.yaml
+      - name: Create Comment
+        id: comment
+        if: ${{ !cancelled() }}
+        run: |
+          result="${{ steps.frontend-semgrep.outputs.result }}"
+          echo "result=${result}" > "$GITHUB_OUTPUT"
 
   #docfx-any:
   #  needs: changes

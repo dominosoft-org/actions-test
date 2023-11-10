@@ -4,20 +4,22 @@ on:
   workflow_dispatch:
   workflow_call:
     outputs:
-      semgrep-length:
-        value: ${{ jobs.frontend-semgrep.outputs.length }}
-      semgrep-reject:
-        value: ${{ jobs.frontend-semgrep.outputs.reject }}
-      semgrep-latestsarif:
-        value: ${{ jobs.frontend-semgrep.outputs.latestsarif }}
-      semgrep-findings:
-        value: ${{ jobs.frontend-semgrep.outputs.findings }}
-      semgrep-message:
-        value: ${{ jobs.frontend-semgrep.outputs.message }}
-      semgrep-capitalized:
-        value: ${{ jobs.frontend-semgrep.outputs.capitalized }}
+      result:
+        value: ${{ jobs.comment.outputs.result }}
 
 jobs:
   frontend-semgrep:
     name: Frontend Semgrep✅
     uses: ./.github/workflows/frontend-semgrep.yaml
+
+  comment:
+    runs-on: ubuntu-latest
+    needs: frontend-semgrep
+    if: ${{ !cancelled() }}
+    outputs:
+      result: ${{ needs.frontend-semgrep.outputs.result }}
+    steps:
+      - id: comment
+        run: |
+          comment="${{ needs.frontend-semgrep.outputs.result }}"
+          echo "comment=${comment}" > "$GITHUB_OUTPUT"

@@ -3,39 +3,50 @@ name: Create Semgrep Table For PR
 on:
   workflow_call:
     inputs:
+      length:
+        required: true
+        type: number
       location:
         required: true
         type: string
-      finding:
+      findings:
         required: true
         type: string
       message:
         required: true
         type: string
+    outputs:
+      comment:
+        value: ${{ jobs.comment.outputs.comment }}
 
 jobs:
   comment:
     runs-on: ubuntu-latest
+    outputs:
+      comment: ${{ steps.comment.outputs.comment }}
     steps:
       - name: Generate Finding Table
+        if: ${{ inputs.length > 0 }}
         uses: buildingcash/json-to-markdown-table-action@v1
         id: findingtable
         with:
-          json: ${{ inputs.finding }}
+          json: ${{ inputs.findings }}
 
       - name: Generate Message Table
+        if: ${{ inputs.length > 0 }}
         uses: buildingcash/json-to-markdown-table-action@v1
         id: messagetable
         with:
           json: ${{ inputs.message }}
 
-      - name: Comment PR(If Findings Exist)
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            # Semgrep(${{ inputs.location }}) 🛑
-            Summary Table
-            ${{ steps.findingtable.outputs.table }}
-
-            Messages Of Findings
-            ${{ steps.messagetable.outputs.table }}
+      - name: Create Comment
+        id: comment
+        run: |
+          comment="### 📄${{ inputs.location }} Semgrep Analysis\n\n"
+          if [ ${{ inputs.length }} -eq 0 ]; then
+            comment+="✅Congratulations! There is no findings"
+          else
+          comment+="#### Summary Table\n\n${{ steps.findingtable.outputs.table }}\n\n"
+          comment+="#### Findings\n\n${{ steps.messagetable.outputs.table }}"
+          fi
+          echo "comment=${comment}" > "$GITHUB_OUTPUT"

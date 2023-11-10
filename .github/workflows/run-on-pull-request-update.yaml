@@ -100,10 +100,15 @@ jobs:
         id: comment
         run: |
           MERGED_COMMENT=""
-          FRONTEND_LICENSE_CHECK="${{ needs.pnpm-lock.outputs.license-check }}"
-          if [ "$FRONTEND_LICENSE_CHECK" != "" ]; then
-          MERGED_COMMENT+=$FRONTEND_LICENSE_CHECK
-          MERGED_COMMENT+="\n"
+          PNPM_LOCK_RESULT="${{ needs.pnpm-lock.outputs.result }}"
+          if [ "$PNPM_LOCK_RESULT" != "" ]; then
+            MERGED_COMMENT+=$PNPM_LOCK_RESULT
+            MERGED_COMMENT+="\n\n"
+          fi
+          FRONTEND_ANY_RESULTS="${{ needs.frontend-any.outputs.result }}"
+          if [ "$FRONTEND_ANY_RESULTS" != "" ]; then
+            MERGED_COMMENT+=$FRONTEND_ANY_RESULTS
+            MERGED_COMMENT+="\n\n"
           fi
           echo "MERGED_COMMENT=${MERGED_COMMENT}" > "$GITHUB_OUTPUT"
 

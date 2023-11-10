@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   workflow_call:
     outputs:
-      license-check:
+      result:
         value: ${{ jobs.frontend-license-check.outputs.result }}
 
 jobs:

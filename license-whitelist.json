@@ -8,7 +8,7 @@
     "Unlicense"
   ],
   "excludePackages": [
-    "@elon-max",
+    "@dominosoft-org",
     "NLog"
   ],
   "excludeAuthors": [

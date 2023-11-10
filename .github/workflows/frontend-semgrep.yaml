@@ -3,18 +3,8 @@ name: frontend semgrep
 on:
   workflow_call:
     outputs:
-      length:
-        value: ${{ jobs.analyze-report.outputs.length }}
-      reject:
-        value: ${{ jobs.analyze-report.outputs.reject }}
-      latestsarif:
-        value: ${{ jobs.analyze-report.outputs.latestsarif }}
-      findings:
-        value: ${{ jobs.analyze-report.outputs.findings }}
-      message:
-        value: ${{ jobs.analyze-report.outputs.message }}
-      capitalized:
-        value: ${{ jobs.analyze-report.outputs.capitalized }}
+      result:
+        value: ${{ jobs.analyze-report.outputs.result }}
 
 jobs:
   semgrep:

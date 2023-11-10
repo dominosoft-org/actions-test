@@ -47,26 +47,26 @@ jobs:
               - 'backend/NeuroFramework.Common/**/*.csproj'
   backend-any:
     needs: changes
-    if: ${{ github.event_name == 'pull_request' || needs.changes.outputs.backend-any == 'true' }}
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.backend-any == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "do backend-any"
 
   frontend-any:
     needs: changes
-    if: ${{ github.event_name == 'pull_request' || needs.changes.outputs.frontend-any == 'true' }}
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.frontend-any == 'true' }}
     uses: ./.github/workflows/on-frontend-any.yaml
 
   #docfx-any:
   #  needs: changes
-  #  if: ${{ github.event_name == 'pull_request' || needs.changes.outputs.docfx-any == 'true' }}
+  #  if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.docfx-any == 'true' }}
   #  runs-on: ubuntu-latest
   #  steps:
   #    - run: echo "do docfx-any"
 
   backend-common-any:
     needs: changes
-    if: ${{ github.event_name == 'pull_request' || needs.changes.outputs.backend-common-any == 'true' }}
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.backend-common-any == 'true' }}
     uses: ./.github/workflows/on-backend-common-any.yaml
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
@@ -74,23 +74,23 @@ jobs:
 
   backend-fakes-any:
     needs: changes
-    if: ${{ github.event_name == 'pull_request' || needs.changes.outputs.backend-fakes-any == 'true' }}
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.backend-fakes-any == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "do backend-fakes-any"
 
   pnpm-lock:
     needs: changes
-    if: ${{ github.event_name == 'pull_request' || needs.changes.outputs.pnpm-lock == 'true' }}
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.pnpm-lock == 'true' }}
     uses: ./.github/workflows/on-pnpm-lock.yaml
 
   csproj:
     needs: changes
-    if: ${{ github.event_name == 'pull_request' || needs.changes.outputs.csproj == 'true' }}
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.csproj == 'true' }}
     uses: ./.github/workflows/on-csproj.yaml
   
   output-comment:
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ always() && github.event_name == 'pull_request' }}
     needs: [ backend-any, frontend-any, backend-common-any, backend-fakes-any, pnpm-lock, csproj ]
     runs-on: ubuntu-latest
     steps:

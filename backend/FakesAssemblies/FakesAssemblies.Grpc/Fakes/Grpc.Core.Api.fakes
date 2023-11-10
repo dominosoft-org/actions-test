@@ -1,0 +1,61 @@
+﻿<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="Grpc.Core.Api" Version="2.0.0.0"/>
+  <StubGeneration>
+    <!-- Stub化不能な型を除外する -->
+    <Remove FullName="Grpc.Core.AsyncAuthInterceptor!"/>
+    <Remove FullName="Grpc.Core.AsyncClientStreamingCall`2!"/>
+    <Remove FullName="Grpc.Core.AsyncDuplexStreamingCall`2!"/>
+    <Remove FullName="Grpc.Core.AsyncServerStreamingCall`1!"/>
+    <Remove FullName="Grpc.Core.AsyncStreamReaderExtensions!"/>
+    <Remove FullName="Grpc.Core.AsyncUnaryCall`1!"/>
+    <Remove FullName="Grpc.Core.AuthProperty!"/>
+    <Remove FullName="Grpc.Core.ContextPropagationToken!"/>
+    <Remove FullName="Grpc.Core.KeyCertificatePair!"/>
+    <Remove FullName="Grpc.Core.Marshallers!"/>
+    <Remove FullName="Grpc.Core.Metadata!"/>
+    <Remove FullName="Grpc.Core.UnaryServerMethod`2!"/>
+    <Remove FullName="Grpc.Core.ClientStreamingServerMethod`2!"/>
+    <Remove FullName="Grpc.Core.ServerStreamingServerMethod`2!"/>
+    <Remove FullName="Grpc.Core.DuplexStreamingServerMethod`2!"/>
+    <Remove FullName="Grpc.Core.ServerServiceDefinition!"/>
+    <Remove FullName="Grpc.Core.VerifyPeerCallback!"/>
+    <Remove FullName="Grpc.Core.SslCredentials!"/>
+    <Remove FullName="Grpc.Core.VerifyPeerContext!"/>
+    <Remove FullName="Grpc.Core.VersionInfo!"/>
+    <Remove FullName="Grpc.Core.Api.Utils.EncodingExtensions!"/>
+    <Remove FullName="Grpc.Core.Interceptors.CallInvokerExtensions!"/>
+    <Remove FullName="Grpc.Core.Interceptors.ChannelExtensions!"/>
+    <Remove FullName="Grpc.Core.Interceptors.InterceptingCallInvoker!"/>
+    <Remove FullName="Grpc.Core.Internal.CallDebuggerHelpers!"/>
+    <Remove FullName="Grpc.Core.Internal.CallDebuggerMethodDebugView!"/>
+    <Remove FullName="Grpc.Core.Internal.ClientDebuggerHelpers!"/>
+    <Remove FullName="Grpc.Core.Internal.UnimplementedCallInvoker!"/>
+    <Remove FullName="Grpc.Core.Utils.GrpcPreconditions!"/>
+    <Remove FullName="System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute!"/>
+    <Remove FullName="System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute!"/>
+  </StubGeneration>
+  <ShimGeneration>
+    <!-- Shim化不能な型を除外する -->
+    <Remove FullName="Grpc.Core.AsyncCallState!"/>
+    <Remove FullName="Grpc.Core.AsyncClientStreamingCall`2!"/>
+    <Remove FullName="Grpc.Core.AsyncDuplexStreamingCall`2!"/>
+    <Remove FullName="Grpc.Core.AsyncServerStreamingCall`1!"/>
+    <Remove FullName="Grpc.Core.AsyncUnaryCall`1!"/>
+    <Remove FullName="Grpc.Core.CallCredentials+AsyncAuthInterceptorCredentials!"/>
+    <Remove FullName="Grpc.Core.CallCredentials+CompositeCallCredentials!"/>
+    <Remove FullName="Grpc.Core.ChannelCredentials+CompositeChannelCredentials!"/>
+    <Remove FullName="Grpc.Core.ChannelCredentials+InsecureCredentials!"/>
+    <Remove FullName="Grpc.Core.ClientBase+ClientBaseConfiguration!"/>
+    <Remove FullName="Grpc.Core.ClientBase+ClientBaseDebugType!"/>
+    <Remove FullName="Grpc.Core.Metadata+MetadataDebugView!"/>
+    <Remove FullName="Grpc.Core.Api.Utils.EncodingExtensions!"/>
+    <Remove FullName="Grpc.Core.Interceptors.CallInvokerExtensions+MetadataInterceptor!"/>
+    <Remove FullName="Grpc.Core.Interceptors.InterceptingCallInvoker!"/>
+    <Remove FullName="Grpc.Core.Internal.CallDebuggerHelpers!"/>
+    <Remove FullName="Grpc.Core.Internal.CallDebuggerMethodDebugView!"/>
+    <Remove FullName="Grpc.Core.Internal.ClientDebuggerHelpers!"/>
+    <Remove FullName="Grpc.Core.Internal.UnimplementedCallInvoker!"/>
+    <Remove FullName="System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembersAttribute!"/>
+    <Remove FullName="System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessageAttribute!"/>
+  </ShimGeneration>
+</Fakes>

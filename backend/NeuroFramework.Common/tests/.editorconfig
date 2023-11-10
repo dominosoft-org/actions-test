@@ -1,0 +1,55 @@
+﻿# ユニットテスト用に規制を緩めたeditorconfig。
+
+[*.cs]
+
+# CA1031:一般的な例外の種類はキャッチしません
+dotnet_diagnostic.CA1031.severity = none
+
+# CA1506:クラス結合度を大きくしすぎないでください
+dotnet_diagnostic.CA1506.severity = none
+
+# CA1508: 使用されない条件付きコードを回避する
+dotnet_diagnostic.CA1508.severity = none
+
+# CA1707: 識別子はアンダースコアを含むことはできません
+dotnet_diagnostic.CA1707.severity = none
+
+# CA1822: メンバーを static に設定します
+dotnet_diagnostic.CA1822.severity = none
+
+# CA1825: 長さ 0 の配列は割り当て不可
+dotnet_diagnostic.CA1825.severity = none
+
+# CA5394: 安全でないランダム度を使用しない
+dotnet_diagnostic.CA5394.severity = none
+
+# IDE0001: 名前を単純化します
+dotnet_diagnostic.IDE0001.severity = none
+
+# IDE0004: 不要なキャストの削除
+dotnet_diagnostic.IDE0004.severity = none
+
+# IDE1006: 命名スタイル
+dotnet_diagnostic.IDE1006.severity = none
+
+# IDE0017: オブジェクトの初期化を簡略化します
+dotnet_diagnostic.IDE0017.severity = none
+
+# IDE0039: ローカル関数を使用します
+dotnet_diagnostic.IDE0039.severity = none
+
+# IDE0042: 変数の宣言を分解
+dotnet_diagnostic.IDE0042.severity = none
+
+# IDE0058: 式の値が使用されていません
+dotnet_diagnostic.IDE0058.severity = none
+csharp_style_unused_value_expression_statement_preference = discard_variable:none
+
+# IDE0060: 使用されていないパラメーターを削除する
+dotnet_diagnostic.IDE0060.severity = none
+
+# IDE0150: null値 チェックを明確にできます
+dotnet_diagnostic.IDE0150.severity = none
+
+# IDE0230: UTF-8 文字列リテラルを使用する
+dotnet_diagnostic.IDE0230.severity = none

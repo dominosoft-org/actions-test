@@ -1,0 +1,113 @@
+name: Version Increment
+
+on:
+  workflow_call:
+    inputs:
+      version-fragment:
+        required: true
+        type: string
+      prefix:
+        required: false
+        type: string
+    outputs:
+      next:
+        description: The next version tag
+        value: ${{ jobs.version-increment.outputs.next-version }}
+jobs:
+  check-tags:
+    runs-on: ubuntu-latest
+    outputs:
+      is_new_tag: ${{ steps.exists_tags.outputs.result == 'new_tag' || steps.exists_tags.outputs.result == 'new_tag_prefix' }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check Exists Tags
+        id: exists_tags
+        run: |
+          if [ -n "${{ inputs.prefix }}" ];
+            then
+              # prefixのタグを検索
+              tags=`git tag -l '${{ inputs.prefix }}*'`
+              if [ -z "$tags" ];
+                then echo result='new_tag_prefix' >> $GITHUB_OUTPUT;
+              fi;
+            else
+              # semantic versionのタグを検索
+              tags=`git tag -l '[0-9]*-[a-z0-9]*'`
+              if [ -z "$tags" ];
+                then echo result='new_tag' >> $GITHUB_OUTPUT;
+              fi;
+          fi
+
+      - name: Create Tag Version
+        if: steps.exists_tags.outputs.result == 'new_tag' || steps.exists_tags.outputs.result == 'new_tag_prefix'
+        id: tag_version
+        run: |
+          if ${{ inputs.version-fragment && true || false }};
+            then echo version='0.0.1-${{ inputs.version-fragment }}.0' >> $GITHUB_OUTPUT;
+            else echo version='0.0.1' >> $GITHUB_OUTPUT;
+          fi
+
+      - name: Add New Tag
+        if: steps.exists_tags.outputs.result == 'new_tag'
+        uses: pkgdeps/git-tag-action@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_repo: ${{ github.repository }}
+          git_commit_sha: ${{ github.sha }}
+          version: ${{ steps.tag_version.outputs.version }}
+
+      - name: Add New Prefix Tag
+        if: steps.exists_tags.outputs.result == 'new_tag_prefix'
+        uses: pkgdeps/git-tag-action@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_repo: ${{ github.repository }}
+          git_commit_sha: ${{ github.sha }}
+          version: ${{ steps.tag_version.outputs.version }}
+          git_tag_prefix: ${{ inputs.prefix }}
+
+  version-increment:
+    needs: check-tags
+    if: needs.check-tags.outputs.is_new_tag == 'false'
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.get_latest_tag.outputs.tag }}
+      next-version: ${{ steps.bump_version.outputs.next-version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oprypin/find-latest-tag@v1
+        id: get_latest_tag
+        with:
+          repository: ${{ github.repository }}
+          releases-only: false
+          prefix: ${{ inputs.prefix }}
+
+      - name: Remove Prefix
+        id: semantic_version
+        run: |
+          if ${{ inputs.prefix && true || false }};
+            then echo ${{ steps.get_latest_tag.outputs.tag }} | echo version=`sed 's/${{ inputs.prefix }}//'` >> $GITHUB_OUTPUT;
+            else echo version=${{ steps.get_latest_tag.outputs.tag }} >> $GITHUB_OUTPUT;
+          fi
+
+      - name: Bump release version
+        id: bump_version
+        uses: christian-draeger/increment-semantic-version@1.1.0
+        with:
+          current-version: ${{ steps.semantic_version.outputs.version }}
+          version-fragment: ${{ inputs.version-fragment }}
+
+      - name: Update Git Tag
+        uses: pkgdeps/git-tag-action@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_repo: ${{ github.repository }}
+          git_commit_sha: ${{ github.sha }}
+          version: ${{ steps.bump_version.outputs.next-version }}
+          git_tag_prefix: ${{ inputs.prefix }}

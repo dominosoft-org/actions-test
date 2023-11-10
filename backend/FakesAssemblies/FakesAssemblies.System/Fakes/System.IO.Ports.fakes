@@ -1,0 +1,19 @@
+﻿<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="System.IO.Ports" Version="7.0.0.0"/>
+  <StubGeneration>
+    <!-- Stub化不能な型を除外する -->
+    <Remove FullName="FxResources.System.IO.Ports.SR!"/>
+    <Remove FullName="System.SR!"/>
+    <Remove FullName="System.IO.Ports.SerialDataReceivedEventArgs!"/>
+    <Remove FullName="System.IO.Ports.SerialDataReceivedEventHandler!"/>
+    <Remove FullName="System.IO.Ports.SerialErrorReceivedEventArgs!"/>
+    <Remove FullName="System.IO.Ports.SerialErrorReceivedEventHandler!"/>
+    <Remove FullName="System.IO.Ports.SerialPinChangedEventArgs!"/>
+    <Remove FullName="System.IO.Ports.SerialPinChangedEventHandler!"/>
+  </StubGeneration>
+  <ShimGeneration>
+    <!-- Shim化不能な型を除外する -->
+    <Remove FullName="FxResources.System.IO.Ports.SR!"/>
+    <Remove FullName="System.SR!"/>
+  </ShimGeneration>
+</Fakes>

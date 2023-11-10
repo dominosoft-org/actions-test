@@ -1,0 +1,23 @@
+﻿<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0.0"/>
+  <StubGeneration>
+    <!-- Stub化不能な型を除外する -->
+    <Remove FullName="FxResources.Microsoft.Extensions.DependencyInjection.Abstractions.SR!"/>
+    <Remove FullName="Microsoft.Extensions.DependencyInjection.ActivatorUtilities!"/>
+    <Remove FullName="Microsoft.Extensions.DependencyInjection.ObjectFactory!"/>
+    <Remove FullName="Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.Internal.ParameterDefaultValue!"/>
+    <Remove FullName="System.ThrowHelper!"/>
+    <Remove FullName="System.SR!"/>
+  </StubGeneration>
+  <ShimGeneration>
+    <!-- Shim化不能な型を除外する -->
+    <Remove FullName="FxResources.Microsoft.Extensions.DependencyInjection.Abstractions.SR!"/>
+    <Remove FullName="Microsoft.Extensions.DependencyInjection.ActivatorUtilities+ConstructorMatcher!"/>
+    <Remove FullName="Microsoft.Extensions.Internal.ParameterDefaultValue!"/>
+    <Remove FullName="System.ThrowHelper!"/>
+    <Remove FullName="System.SR!"/>
+  </ShimGeneration>
+</Fakes>

@@ -1,0 +1,39 @@
+﻿<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0.0"/>
+  <StubGeneration>
+    <!-- Stub化不能な型を除外する -->
+    <Remove FullName="FxResources.Microsoft.Extensions.Logging.Abstractions.SR!"/>
+    <Remove FullName="Microsoft.Extensions.Internal.TypeNameHelper!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerFactoryExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerMessage!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerMessageAttribute!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LogValuesFormatter!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.NullExternalScopeProvider!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.NullScope!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.Abstractions.NullLogger!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.Abstractions.NullLoggerProvider!"/>
+    <Remove FullName="System.ThrowHelper!"/>
+    <Remove FullName="System.SR!"/>
+  </StubGeneration>
+  <ShimGeneration>
+    <!-- Shim化不能な型を除外する -->
+    <Remove FullName="FxResources.Microsoft.Extensions.Logging.Abstractions.SR!"/>
+    <Remove FullName="Microsoft.Extensions.Internal.TypeNameHelper!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.FormattedLogValues!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerExternalScopeProvider+Scope!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerMessage+LogValues!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerMessage+LogValues`1!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerMessage+LogValues`2!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerMessage+LogValues`3!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerMessage+LogValues`4!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerMessage+LogValues`5!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LoggerMessage+LogValues`6!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.LogValuesFormatter!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.NullExternalScopeProvider!"/>
+    <Remove FullName="Microsoft.Extensions.Logging.NullScope!"/>
+    <Remove FullName="System.ThrowHelper!"/>
+    <Remove FullName="System.SR!"/>
+    <Remove FullName="System.Text.ValueStringBuilder!"/>
+  </ShimGeneration>
+</Fakes>

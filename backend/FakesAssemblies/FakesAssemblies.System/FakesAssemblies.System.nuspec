@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <!-- 要素名についてMSBuildとの比較は以下のURL:
+    https://learn.microsoft.com/ja-jp/nuget/reference/msbuild-targets -->
+    <!-- id: PackageId, Title -->
+    <id>NeuroFramework.Testing.FakesAssemblies.System</id>
+    <!-- version: PackageVersion-->
+    <version>0.1.1-alpha.1</version>
+    <!-- description: Description -->
+    <description>単体テストで用いるためのFakesアセンブリの集合。System.*系。再配布禁止。</description>
+    <!-- authors: Authors -->
+    <authors>Original author: Microsoft</authors>
+    <!-- copyright: Copyright -->
+    <copyright/>
+    <!-- Repository: RepositoryUrl -->
+    <repository type="git" url="https://github.com/elon-max/neuro-framework-common/"/>
+    <dependencies>
+      <group targetFramework="net7.0">
+        <dependency id="Microsoft.QualityTools.Testing.Fakes" version="16.11.230815" />
+      </group>
+    </dependencies>
+    <readme>docs\README.md</readme>
+  </metadata>
+  <files>
+    <file src="FakesAssemblies\**" target="lib\net7.0" />
+    <file src="README.md" target="docs\" />
+  </files>
+</package>

@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.app.json",
+  "include": ["tests/**/*.ts", "tests/**/*.d.ts", "src/**/*.vue", "src/**/*.ts", "src/**/*.d.ts"],
+  "compilerOptions": {
+    "baseUrl": "tests",
+    "paths": {
+      "@/*": ["./*"],
+      "src/*": ["../src/*"]
+    },
+    "composite": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "references": [{ "path": "./tsconfig.app.json" }]
+}

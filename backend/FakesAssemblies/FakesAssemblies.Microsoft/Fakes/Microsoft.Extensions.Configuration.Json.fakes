@@ -1,0 +1,18 @@
+﻿<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="Microsoft.Extensions.Configuration.Json" Version="7.0.0.0"/>
+  <StubGeneration>
+    <!-- Stub化不能な型を除外する -->
+    <Remove FullName="FxResources.Microsoft.Extensions.Configuration.Json.SR!"/>
+    <Remove FullName="Microsoft.Extensions.Configuration.Json.JsonConfigurationFileParser!"/>
+    <Remove FullName="Microsoft.Extensions.Configuration.JsonConfigurationExtensions!"/>
+    <Remove FullName="System.ThrowHelper!"/>
+    <Remove FullName="System.SR!"/>
+  </StubGeneration>
+  <ShimGeneration>
+    <!-- Shim化不能な型を除外する -->
+    <Remove FullName="FxResources.Microsoft.Extensions.Configuration.Json.SR!"/>
+    <Remove FullName="Microsoft.Extensions.Configuration.Json.JsonConfigurationFileParser!"/>
+    <Remove FullName="System.ThrowHelper!"/>
+    <Remove FullName="System.SR!"/>
+  </ShimGeneration>
+</Fakes>

@@ -1,0 +1,5 @@
+{
+  "typescript.preferences.importModuleSpecifier": "shortest",
+  "eslint.workingDirectories": ["."],
+  "prettier.configPath": "../.prettierrc"
+}

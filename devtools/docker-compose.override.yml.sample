@@ -1,0 +1,6 @@
+version: "3"
+services:
+  sonarqube:
+    ports:
+      # SonarQubeのポート番号を変更するサンプル
+      - "9001:9000"

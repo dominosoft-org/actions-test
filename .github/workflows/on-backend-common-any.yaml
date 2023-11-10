@@ -1,0 +1,27 @@
+name: run on changing backend/NeuroFramework.Common/ any code
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      REPO_ACCOUNT:
+        required: true
+      REPO_ACCESS_TOKEN:
+        required: true
+
+jobs:
+  backend-semgrep:
+    name: Backend Semgrep
+    uses: ./.github/actions/backend-semgrep.yaml
+  code-analysis:
+    name: Code Analysis
+    uses: ./.github/actions/code-analysis.yaml
+    secrets:
+      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
+      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+  unit-test:
+    name: Unit Test
+    uses: ./.github/actions/unit-test.yaml
+    secrets:
+      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
+      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}

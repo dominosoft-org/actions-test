@@ -1,0 +1,41 @@
+name: Frontend Publish
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ["main"]
+    types: [closed]
+    paths:
+      - "frontend/**"
+
+jobs:
+  get-target-dir-list:
+    runs-on: ubuntu-latest
+    outputs:
+      dir_list: ${{ steps.dir_list.outputs.list }}
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: dir_list
+        run: |
+          # ブランチのdiffファイル名を取得
+          changed_files=$(git diff --name-only ${{ github.ref_name }}^ ${{ github.ref_name }})
+          # 変更されたfrontend/直下のディレクトリ名を取得
+          path_list=[`echo "$changed_files" | grep -E "^frontend/.*/?$" | cut -d "/" -f2 | sort -u | sed "s/\$/\",/"  | sed "s/^/\ \ \"/"`]
+          echo list=$path_list >> $GITHUB_OUTPUT
+
+  launch-publish:
+    needs: get-target-dir-list
+    if: needs.get-target-dir-list.outputs.dir_list != '[]'
+    strategy:
+      matrix:
+        dir: ${{ fromJson(needs.get-target-dir-list.outputs.dir_list) }}
+    uses: ./.github/workflows/npm-publish.yaml
+    with:
+      frontend_dir_name: ${{ matrix.dir }}

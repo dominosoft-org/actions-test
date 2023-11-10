@@ -1,0 +1,90 @@
+name: run on pull request update
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - "main"
+    types:
+      - opened
+      - synchronize
+    # pathsによるfilterは、dorny/paths-filterで行う
+
+jobs:
+  # プルリクエストの更新時に、変更されたファイルを解析し、走らせるワークフローを選択する。
+  changes:
+    if: ${{ !env.ACT }}
+    runs-on: ubuntu-latest
+    outputs:
+      backend-any: ${{ steps.changes.outputs.backend-any }}
+      frontend-any: ${{ steps.changes.outputs.frontend-any }}
+      #docfx-any: ${{ steps.changes.outputs.docfx-any }}
+      backend-common-any: ${{ steps.changes.outputs.backend-common-any }}
+      backend-fakes-any: ${{ steps.changes.outputs.backend-fakes-any }}
+      pnpm-lock: ${{ steps.changes.outputs.pnpm-lock }}
+      csproj: ${{ steps.changes.outputs.csproj }}
+    steps:
+      - name: Checkout🛎️
+        uses: actions/checkout@v4
+      - name: Filter changes🔎
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            backend-any:
+              - 'backend/**'
+            frontend-any:
+              - 'frontend/**'
+            docfx-any:
+              - 'doc/docfx/**'
+            backend-common-any:
+              - 'backend/NeuroFramework.Common/**'
+            backend-fakes-any:
+              - 'backend/FakesAssemblies/**'
+            pnpm-lock:
+              - '**/pnpm-lock.yaml'
+            csproj:
+              - 'backend/NeuroFramework.Common/**/*.csproj'
+  backend-any:
+    needs: changes
+    if: ${{ env.ACT || needs.changes.outputs.backend-any == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "do backend-any"
+
+  frontend-any:
+    needs: changes
+    if: ${{ env.ACT || needs.changes.outputs.frontend-any == 'true' }}
+    uses: ./.github/workflows/on-frontend-any.yaml
+
+  docfx-any:
+    needs: changes
+    if: ${{ env.ACT || needs.changes.outputs.docfx-any == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "do docfx-any"
+
+  backend-common-any:
+    needs: changes
+    if: ${{ env.ACT || needs.changes.outputs.backend-common-any == 'true' }}
+    uses: ./.github/workflows/on-backend-common-any.yaml
+    secrets:
+      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
+      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+
+  backend-fakes-any:
+    needs: changes
+    if: ${{ env.ACT || needs.changes.outputs.backend-fakes-any == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "do backend-fakes-any"
+
+  pnpm-lock:
+    needs: changes
+    if: ${{ env.ACT || needs.changes.outputs.pnpm-lock == 'true' }}
+    uses: ./.github/workflows/on-pnpm-lock.yaml
+
+  csproj:
+    needs: changes
+    if: ${{ env.ACT || needs.changes.outputs.csproj == 'true' }}
+    uses: ./.github/workflows/on-csproj.yaml

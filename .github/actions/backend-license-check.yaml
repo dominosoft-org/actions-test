@@ -1,0 +1,56 @@
+name: backend license check
+
+on:
+  workflow_call:
+    outputs:
+      result:
+        description: "ライセンスチェックの結果を格納する。"
+        value: ${{ jobs.check.outputs.result }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.log.outputs.result }}
+    steps:
+      - name: Checkout🛎️
+        uses: actions/checkout@v4
+      - name: Setup .NET🔧
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+      - name: Check License👀
+        run: |
+          excludeLicenses=$(cat ./license-whitelist.json | jq -r '.excludeLicenses')
+          excludePackages=$(cat ./license-whitelist.json | jq -r '.excludePackages')
+          excludeAuthors=$(cat ./license-whitelist.json | jq -r '.excludeAuthors')
+          cd ./backend/NeuroFramework.Common
+          dotnet new tool-manifest
+          dotnet tool install --local dotnet-project-licenses
+          dotnet tool run dotnet-project-licenses -i ./ -u -j --packages-filter /NeuroFramework.*/
+          jq --argjson array "$excludeLicenses" '. | map(select(.LicenseType as $type | $array | index($type) | not))' licenses.json >> licenses2.json
+          jq --argjson array "$excludePackages" '. | map(select(.PackageName as $name | $array | any(. as $elem | $name | startswith($elem)) | not))' licenses2.json >> licenses3.json
+          jq --argjson array "$excludeAuthors" '. | map(select(.Authors as $authors | $array | any(. as $elem | $authors | index($elem)) | not))' licenses3.json >> licenses4.json
+      - name: Output Log🖊️
+        id: log
+        run: |
+          cd ./backend/NeuroFramework.Common
+          lines=$(cat licenses4.json | jq '.[].PackageName')
+          if [ -z "$lines" ]; then
+            # すべてのライセンスがOKの場合
+            echo "result=$(echo 'All OK.')" >> "$GITHUB_OUTPUT"
+          else
+            # ライセンスNGがある場合
+            log=$(echo "${lines}" | sed -n '/,/,$p')
+            log="${log//$'\n'/\\n}"
+            log+="\\n\\nIs it safe to use these libraries? Reviewers must judge that."
+            echo "result=$(echo $log)" >> "$GITHUB_OUTPUT"
+          fi
+
+#postcomment:
+#    uses: ./.github/workflows/comment_bot.yaml
+#    if: always()
+#    needs: build
+#   with:
+#      action_name: Frontend License Check
+#      comment: ${{ needs.build.outputs.output1 }}

@@ -1,0 +1,13 @@
+name: run on changing csproj files
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    outputs:
+      license-check:
+        value: ${{ jobs.backend-license-check.outputs.result }}
+
+jobs:
+  backend-license-check:
+    name: Frontend License Check✅
+    uses: ./.github/actions/backend-license-check.yaml

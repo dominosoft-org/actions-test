@@ -1,0 +1,83 @@
+name: generate semgrep report
+
+on:
+  workflow_call:
+    inputs:
+      location:
+        required: true
+        type: string
+      descriptionKey:
+        required: true
+        type: string
+    outputs:
+      length:
+        value: ${{ jobs.report.outputs.length }}
+      reject:
+        value: ${{ jobs.report.outputs.reject }}
+      latestsarif:
+        value: ${{ jobs.report.outputs.latestsarif }}
+      finding:
+        value: ${{ jobs.report.outputs.finding }}
+      message:
+        value: ${{ jobs.report.outputs.message }}
+      capitalized:
+        value: ${{ jobs.report.outputs.capitalized }}
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    outputs:
+      length: ${{ steps.ruleinfo.outputs.length }}
+      reject: ${{ steps.ruleinfo.outputs.reject }}
+      latestsarif: ${{ steps.ruleinfo.outputs.latestsarif }}
+      finding: ${{ steps.extract.outputs.finding }}
+      message: ${{ steps.extract.outputs.message }}
+      capitalized: ${{ steps.string.outputs.capitalized }}
+
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: semgrep ${{ inputs.location }} report
+          path: semgrepreport/
+      - name: Generate Rule Info For Semgrep Findings
+        id: ruleinfo
+        run: |
+          cd ./semgrepreport/${{ inputs.location }}
+          cp ${{ inputs.location }}.sarif ../devtools/semgrep/
+          cd ../devtools/semgrep/
+          location="${{ inputs.location }}" descriptionKey="${{ inputs.descriptionKey }}" bash semgrep-rule-info-generation.sh
+
+      - name: Generate Semgrep Finding Report
+        if: steps.ruleinfo.outputs.length > 0
+        id: extract
+        run: |
+          cd ./semgrepreport/devtools/semgrep/
+          latestsarif="${{ steps.ruleinfo.outputs.latestsarif }}" bash semgrep-report-generation.sh
+
+      - name: Upper Location
+        id: string
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ inputs.location }}
+
+      #- name: Comment PR(If Findings Not Exist)
+      #  if: steps.ruleinfo.outputs.length == 0
+      #  uses: thollander/actions-comment-pull-request@v2
+      #  with:
+      #    message: |
+      #      Semgrep(${{ steps.string.outputs.capitalized }}) 🛑
+      #      Congratulations! There is no findings in ${{ inputs.location }} files!
+
+  #comment_pr:
+  # uses: ./.github/workflows/semgrep-table.yaml
+  # needs: report
+  # if: needs.report.outputs.length > 0
+  # with:
+  #    location: ${{ needs.report.outputs.capitalized }}
+  #    finding: ${{ needs.report.outputs.finding }}
+  #    message: ${{ needs.report.outputs.message }}
+
+  # auto_reject:
+  #   uses: ./.github/workflows/auto-reject.yaml
+  #   needs: report
+  #   if: needs.report.outputs.reject > 0

@@ -1,0 +1,22 @@
+﻿<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="System.Net.Http" Version="7.0.0.0"/>
+  <StubGeneration>
+    <!-- Stub化不能な型を除外する -->
+    <Remove FullName="System.Net.Http.HeaderEncodingSelector`1!"/>
+    <Remove FullName="System.Net.Http.HttpProtocolException!"/>
+    <Remove FullName="System.Net.Http.HttpRequestOptions!"/>
+    <Remove FullName="System.Net.Http.ReadOnlyMemoryContent!"/>
+    <Remove FullName="System.Net.Http.SocketsHttpHandler!"/>
+    <Remove FullName="System.Net.Http.SocketsHttpConnectionContext!"/>
+    <Remove FullName="System.Net.Http.SocketsHttpPlaintextStreamFilterContext!"/>
+    <Remove FullName="System.Net.Http.Headers.HttpContentHeaders!"/>
+    <Remove FullName="System.Net.Http.Headers.HttpHeaderValueCollection`1!"/>
+    <Remove FullName="System.Net.Http.Headers.HttpRequestHeaders!"/>
+    <Remove FullName="System.Net.Http.Headers.HttpResponseHeaders!"/>
+    <Remove FullName="System.Net.Http.Headers.MediaTypeWithQualityHeaderValue!"/>
+    <Remove FullName="System.Net.Http.Headers.TransferCodingWithQualityHeaderValue!"/>
+  </StubGeneration>
+  <ShimGeneration>
+    <!-- Shim化不能な型を除外する -->
+  </ShimGeneration>
+</Fakes>

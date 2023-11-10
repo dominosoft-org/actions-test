@@ -1,0 +1,12 @@
+﻿<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="System.Threading.Channels" Version="7.0.0.0"/>
+  <StubGeneration>
+    <!-- Stub化不能な型を除外する -->
+    <Remove FullName="System.Threading.Channels.BoundedChannelOptions!"/>
+    <Remove FullName="System.Threading.Channels.Channel!"/>
+    <Remove FullName="System.Threading.Channels.UnboundedChannelOptions!"/>
+  </StubGeneration>
+  <ShimGeneration>
+    <!-- Shim化不能な型を除外する -->
+  </ShimGeneration>
+</Fakes>

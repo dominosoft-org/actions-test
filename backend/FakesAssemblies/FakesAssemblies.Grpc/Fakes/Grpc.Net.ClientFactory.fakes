@@ -1,0 +1,36 @@
+﻿<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="Grpc.Net.ClientFactory" Version="2.0.0.0"/>
+  <StubGeneration>
+    <!-- Stub化不能な型を除外する -->
+    <Remove FullName="Grpc.Net.ClientFactory.CallOptionsContext!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.CallOptionsConfigurationInvoker!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.DefaultClientActivator`1!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.DefaultGrpcClientFactory!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.GrpcCallInvokerFactory!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.GrpcClientMappingRegistry!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.TypeNameHelper!"/>
+    <Remove FullName="Grpc.Shared.ArgumentNullThrowHelper!"/>
+    <Remove FullName="Grpc.Shared.CompatibilityHelpers!"/>
+    <Remove FullName="Grpc.Shared.ObjectDisposedThrowHelper!"/>
+    <Remove FullName="Grpc.Shared.HttpHandlerFactory!"/>
+    <Remove FullName="Grpc.Shared.HttpRequestHelpers!"/>
+    <Remove FullName="Microsoft.Extensions.DependencyInjection.GrpcClientServiceExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.DependencyInjection.GrpcHttpClientBuilderExtensions!"/>
+  </StubGeneration>
+  <ShimGeneration>
+    <!-- Shim化不能な型を除外する -->
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.CallOptionsConfigurationInvoker!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.DefaultClientActivator`1!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.DefaultGrpcClientFactory!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.EntryKey!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.GrpcCallInvokerFactory!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.GrpcClientMappingRegistry!"/>
+    <Remove FullName="Grpc.Net.ClientFactory.Internal.TypeNameHelper!"/>
+    <Remove FullName="Grpc.Shared.ArgumentNullThrowHelper!"/>
+    <Remove FullName="Grpc.Shared.CompatibilityHelpers!"/>
+    <Remove FullName="Grpc.Shared.ObjectDisposedThrowHelper!"/>
+    <Remove FullName="Grpc.Shared.HttpHandlerFactory!"/>
+    <Remove FullName="Grpc.Shared.HttpRequestHelpers!"/>
+    <Remove FullName="Microsoft.Extensions.DependencyInjection.GrpcClientServiceExtensions+DefaultHttpClientBuilder"/>
+  </ShimGeneration>
+</Fakes>

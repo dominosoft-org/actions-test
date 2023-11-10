@@ -1,0 +1,27 @@
+﻿<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0.0"/>
+  <StubGeneration>
+    <!-- Stub化不能な型を除外する -->
+    <Remove FullName="FxResources.Microsoft.Extensions.Hosting.Abstractions.SR!"/>
+    <Remove FullName="Microsoft.Extensions.DependencyInjection.ServiceCollectionHostedServiceExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.EnvironmentName!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.Environments!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.HostAbortedException!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.HostDefaults!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.HostEnvironmentEnvExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.HostingAbstractionsHostBuilderExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.HostingEnvironmentExtensions!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.IApplicationLifetime!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.IHostingEnvironment!"/>
+    <Remove FullName="System.ThrowHelper!"/>
+    <Remove FullName="System.SR!"/>
+  </StubGeneration>
+  <ShimGeneration>
+    <!-- Shim化不能な型を除外する -->
+    <Remove FullName="FxResources.Microsoft.Extensions.Hosting.Abstractions.SR!"/>
+    <Remove FullName="Microsoft.Extensions.Hosting.EnvironmentName"/>
+    <Remove FullName="System.ThrowHelper!"/>
+    <Remove FullName="System.SR!"/>
+  </ShimGeneration>
+</Fakes>

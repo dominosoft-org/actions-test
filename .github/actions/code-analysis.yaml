@@ -1,0 +1,75 @@
+name: code analysis
+
+on:
+  workflow_call:
+    secrets:
+      REPO_ACCOUNT:
+        required: true
+      REPO_ACCESS_TOKEN:
+        required: true
+    outputs:
+      result:
+        value: ${{ jobs.code-analysis.outputs.result }}
+      log:
+        value: ${{ jobs.code-analysis.outputs.log }}
+env:
+  GITHUB_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
+  GITHUB_PKG_NFW_AUTH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+
+jobs:
+  code-analysis:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.log.outputs.result }}
+      log: ${{ steps.log.outcome}}
+
+    steps:
+      - name: Checkout🛎️
+        uses: actions/checkout@v4
+      - name: Setup Nuget cache⚡
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      - name: Setup .NET⚡
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+      - name: Code Analysis
+        id: code_analysis
+        run: |
+          cd ./backend/NeuroFramework.Common/
+          dotnet sln Common.sln remove tests/**/*.csproj
+          dotnet restore -p:WarningsNotAsErrors=NU1603 -p:NoWarn=NU1603 --configfile "github-actions-nuget.config"
+          dotnet build -m --no-restore -p:Configuration=Release -p:EnforceCodeStyleInBuild=true -p:TreatWarningsAsErrors=true -p:IsGithubActions=true > CodeAnalysis.log
+      - name: Check Logs
+        id: log
+        if: always()
+        run: |
+          cd ./backend/NeuroFramework.Common/
+          sed -i s@'/home/runner/work/neuro-framework-common/neuro-framework-common/backend/NeuroFramework.Common/'@@g CodeAnalysis.log
+          sed -i s@'src/'@@g CodeAnalysis.log
+          log=$(cat CodeAnalysis.log | sed -n '/FAILED/,/Error/p')
+          if [[ $log == '' ]]; then
+            echo "result=Code Analysis passed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo $log
+          log="${log//$'\n'/\\n}"
+          echo "result=$(echo $log)" >> "$GITHUB_OUTPUT"
+
+  #postcomment:
+  #  uses: ./.github/workflows/comment_bot.yaml
+  #  # code_analysisが失敗していても、`Check Logs`を実行した場合はpostcommentを行う
+  #  if: needs.code_analysis.outputs.log == 'success'
+  #  needs: code_analysis
+  #  with:
+  #    action_name: Code Analysis
+  #    comment: ${{ needs.code_analysis.outputs.result }}
+
+  #auto_reject:
+  #  uses: ./.github/workflows/auto-reject.yaml
+  #  needs: code_analysis
+  #  if: failure()

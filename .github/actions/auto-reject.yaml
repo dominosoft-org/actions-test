@@ -1,0 +1,24 @@
+name: auto reject pull request
+
+on:
+  workflow_call:
+
+jobs:
+  auto-reject:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto Reject
+        uses: actions/github-script@0.9.0
+        with:
+          script: |
+            await github.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+            await github.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              state: 'closed'
+            });

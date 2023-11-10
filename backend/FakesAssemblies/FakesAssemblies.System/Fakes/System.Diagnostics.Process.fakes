@@ -1,0 +1,14 @@
+﻿<Fakes xmlns="http://schemas.microsoft.com/fakes/2011/" Diagnostic="true">
+  <Assembly Name="System.Diagnostics.Process" Version="7.0.0.0"/>
+  <StubGeneration>
+    <Remove FullName="Microsoft.Win32.SafeHandles.SafeProcessHandle!"/>
+    <Remove FullName="System.Diagnostics.DataReceivedEventArgs!"/>
+    <Remove FullName="System.Diagnostics.DataReceivedEventHandler!"/>
+    <Remove FullName="System.Diagnostics.ProcessModule!"/>
+    <Remove FullName="System.Diagnostics.ProcessStartInfo!"/>
+    <Remove FullName="System.Diagnostics.ProcessThread!"/>
+  </StubGeneration>
+  <ShimGeneration>
+    <Remove FullName="Microsoft.Win32.SafeHandles.SafeProcessHandle!"/>
+  </ShimGeneration>
+</Fakes>

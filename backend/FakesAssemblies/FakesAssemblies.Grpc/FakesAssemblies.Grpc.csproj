@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AnalysisMode>all</AnalysisMode>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <RepositoryUrl>https://github.com/elon-max/neuro-framework-common/</RepositoryUrl>
+    <Description>単体テストで用いるためのFakesアセンブリの集合。Grpc.*系。</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Company>Nihon Kohden</Company>
+    <Authors>Nihon Kohden</Authors>
+    <Copyright>© Nihon Kohden Co.</Copyright>
+    <Product>Nihon Kohden NeuroFramework</Product>
+    <Title>Nihon Kohden $(AssemblyName)</Title>
+    <!-- Nugetのパッケージ化に必要な情報は別途NuspecFileに書いてあります -->
+    <NuspecFile>FakesAssemblies.Grpc.nuspec</NuspecFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore.Server.ClientFactory" Version="2.58.0" />
+    <PackageReference Include="Grpc.Core.Api" Version="2.58.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Microsoft.QualityTools.Testing.Fakes" Version="16.11.230815" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="FakesAssemblies\**" />
+    <EmbeddedResource Remove="FakesAssemblies\**" />
+    <!--<None Remove="FakesAssemblies\**" />-->
+    <!--<Folder Include="FakesAssemblies\**" />-->
+    <!--<AdditionalDesignTimeBuildInput Remove="FakesAssemblies\**" />-->
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(IsGithubActions)' == ''">
+    <Exec Command="if EXIST &quot;$(ProjectDir)bin\$(Configuration)\*.nupkg&quot; del /Q $(ProjectDir)bin\$(Configuration)\*.nupkg&#xD;&#xA;if NOT EXIST &quot;$(ProjectDir)FakesAssemblies\.&quot; mkdir $(ProjectDir)FakesAssemblies" />
+  </Target>
+
+</Project>

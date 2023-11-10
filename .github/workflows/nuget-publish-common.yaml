@@ -1,0 +1,45 @@
+name: NuGet Publishment For Common
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ["main"]
+    types: [closed]
+    paths:
+      - "backend/NeuroFramework.Common/**"
+
+env:
+  GITHUB_ACCOUNT: ${{  secrets.REPO_ACCOUNT  }}
+  GITHUB_PKG_NFW_AUTH_TOKEN: ${{  secrets.REPO_ACCESS_TOKEN  }}
+
+jobs:
+  version-increment:
+    uses: ./.github/workflows/version-increment.yaml
+    with:
+      version-fragment: "alpha"
+
+  publish:
+    runs-on: windows-latest
+    needs: version-increment
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Build Common Solution
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: |
+          cd .\backend\NeuroFramework.Common
+          dotnet nuget add source ..\..\nupkg
+          dotnet restore -p:WarningsNotAsErrors=NU1603 -p:NoWarn=NU1603 --configfile "github-actions-nuget.config"
+          msbuild /m /p:Configuration=Release -verbosity:quiet /p:Version=${{ needs.version-increment.outputs.next }}
+
+      - name: Publish Common NuGet
+        uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+        with:
+          nupkg-path: '.\backend\NeuroFramework.Common\src\**\bin\Release\*.nupkg'
+          repo-owner: "elon-max"
+          gh-user: ${{  secrets.REPO_ACCOUNT  }}
+          token: ${{  secrets.REPO_ACCESS_TOKEN  }}

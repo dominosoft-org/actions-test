@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.ソリューション項目", "1.ソリューション項目", "{46A5648C-A0F1-4C10-9A14-ECF0FEA91849}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.モジュールの実装", "4.モジュールの実装", "{8B4DA53E-F4E3-42BA-850E-24BFFBE63118}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.モジュールのテスト", "2.モジュールのテスト", "{F9B23F5A-6675-42CA-AB52-6E12A188ACD5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6.開発者ツール", "6.開発者ツール", "{28FFDD67-4FC9-4DC7-98D5-CF91D5A53433}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "テスト設定", "テスト設定", "{B020344D-7891-4F80-A759-DD244B375BF1}"
+	ProjectSection(SolutionItems) = preProject
+		tests\.editorconfig = tests\.editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.プロセスのテスト", "3.プロセスのテスト", "{2351EAF7-8035-4880-BCE3-C229B60F7C44}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5.プロセスの実装", "5.プロセスの実装", "{4B6FE84B-46FA-4E37-B555-F022375B0CA4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuroFramework.Libraries", "src\NeuroFramework.Libraries\NeuroFramework.Libraries.csproj", "{588868EA-E561-458F-BE0A-139974D2BF1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroFramework.Libraries.Testing.Tests", "tests\NeuroFramework.Libraries.Testing.Tests\NeuroFramework.Libraries.Testing.Tests.csproj", "{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{588868EA-E561-458F-BE0A-139974D2BF1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{588868EA-E561-458F-BE0A-139974D2BF1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{588868EA-E561-458F-BE0A-139974D2BF1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{588868EA-E561-458F-BE0A-139974D2BF1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B020344D-7891-4F80-A759-DD244B375BF1} = {46A5648C-A0F1-4C10-9A14-ECF0FEA91849}
+		{588868EA-E561-458F-BE0A-139974D2BF1E} = {8B4DA53E-F4E3-42BA-850E-24BFFBE63118}
+		{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D} = {F9B23F5A-6675-42CA-AB52-6E12A188ACD5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3417ABEF-F685-42DF-807A-C81F050AFEED}
+	EndGlobalSection
+EndGlobal

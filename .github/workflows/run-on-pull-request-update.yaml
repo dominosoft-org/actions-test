@@ -88,3 +88,24 @@ jobs:
     needs: changes
     if: ${{ github.event_name == 'pull_request' || needs.changes.outputs.csproj == 'true' }}
     uses: ./.github/workflows/on-csproj.yaml
+  
+  output-comment:
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: [ backend-any, frontend-any, backend-common-any, backend-fakes-any, pnpm-lock, csproj ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create comment
+        id: comment
+        run: |
+          merged-comment=''
+          frontend-license-check=${{ needs.pnpm-lock.outputs.license-check }}
+          if [ "$frontend-license-check" != "" ]; then
+            merged-comment+=$frontend-license-check
+            merged-comment+="\n"
+          fi
+          echo "merged-comment=${merged-comment}" > "$GITHUB_OUTPUT"
+      - name: Comment to Pull Request
+        uses: ./github/workflows/comment_bot.yaml
+        with:
+          action_name: 'Code Summary'
+          comment: ${{ steps.comment.outputs.merged-comment }}

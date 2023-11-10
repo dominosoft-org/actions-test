@@ -88,11 +88,13 @@ jobs:
     needs: changes
     if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.csproj == 'true' }}
     uses: ./.github/workflows/on-csproj.yaml
-  
-  output-comment:
+
+  create-comment:
     if: ${{ always() && github.event_name == 'pull_request' }}
     needs: [ backend-any, frontend-any, backend-common-any, backend-fakes-any, pnpm-lock, csproj ]
     runs-on: ubuntu-latest
+    outputs:
+      comment: ${{ steps.comment.outputs.MERGED_COMMENT }}
     steps:
       - name: Create comment
         id: comment
@@ -104,8 +106,10 @@ jobs:
           MERGED_COMMENT+="\n"
           fi
           echo "MERGED_COMMENT=${MERGED_COMMENT}" > "$GITHUB_OUTPUT"
-      - name: Comment to Pull Request
-        uses: ./github/workflows/comment_bot.yaml
-        with:
-          action_name: 'Code Summary'
-          comment: ${{ steps.comment.outputs.MERGED_COMMENT }}
+
+  output-comment:
+    needs: create-comment
+    uses: ./.github/workflows/comment_bot.yaml
+    with:
+      action_name: 'Code Summary'
+      comment: ${{ needs.create-comment.outputs.comment }}

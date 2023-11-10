@@ -63,7 +63,7 @@ jobs:
 
   code_coverage_report:
     needs: unit_test
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     name: code coverage report
     if: ${{ !cancelled() }}
     steps:

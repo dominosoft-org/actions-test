@@ -73,14 +73,7 @@ jobs:
             # ライセンスNGがある場合
             log=$(echo "${lines}" | sed -n '/,/,$p')
             log="${log//$'\n'/\\n}"
-            log+="\\nIs it safe to use these libraries? Reviewers must judge that."
+            log+="\\n🤷Is it safe to use these libraries? Reviewers must judge that."
+            result+="$log"
           fi
           echo "result=${result}" >> "$GITHUB_OUTPUT"
-
-#postcomment:
-#    uses: ./.github/workflows/comment_bot.yaml
-#    if: always()
-#    needs: build
-#   with:
-#      action_name: Frontend License Check
-#      comment: ${{ needs.build.outputs.output1 }}

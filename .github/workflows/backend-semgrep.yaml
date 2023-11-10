@@ -1,4 +1,4 @@
-name: frontend semgrep
+name: backend semgrep
 
 on:
   workflow_call:
@@ -25,8 +25,9 @@ jobs:
       - name: Create Command
         id: create-command
         run: |
-          config=$(cat ./devtools/semgrep/semgrep-frontend.config|tr '\n' ' '|sed -e 's/ $/\n/g')
-          semgrep_command_args=$(echo "scan $config ./frontend --sarif --output ./frontend/frontend.sarif")
+          config=$(cat ./devtools/semgrep/semgrep-backend.config|tr '\n' ' '|sed -e 's/ $/\n/g')
+          semgrep_command_args=$(echo "scan $config ./backend/NeuroFramework.Common/src --sarif --output ./backend/backend.sarif")
+          echo "$semgrep_command_args"
           echo "args=$(echo $semgrep_command_args)" >> "$GITHUB_OUTPUT"
       - name: Scan🌈
         id: scan
@@ -37,15 +38,15 @@ jobs:
       - name: Upload Report📑
         uses: actions/upload-artifact@v3
         with:
-          name: semgrep frontend report
+          name: semgrep backend report
           path: |
-            ./frontend/frontend.sarif
+            ./backend/backend.sarif
             ./devtools/semgrep/semgrep-rule-info-generation.sh
             ./devtools/semgrep/semgrep-report-generation.sh
   analyze-report:
     name: Analyze Report
     needs: semgrep
-    uses: ./.github/actions/semgrep-report.yaml
+    uses: ./.github/workflows/semgrep-report.yaml
     with:
-      location: frontend
-      descriptionKey: .fullDescription.text
+      location: backend
+      descriptionKey: .shortDescription.text

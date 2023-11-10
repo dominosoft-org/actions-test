@@ -63,7 +63,7 @@ jobs:
     needs: unit_test
     runs-on: ubuntu-latest
     name: Code Coverage Report
-    if: ${{ !cancelled() && !skipped() }}
+    if: ${{ !cancelled() }}
     steps:
       - uses: actions/download-artifact@v3
         with:

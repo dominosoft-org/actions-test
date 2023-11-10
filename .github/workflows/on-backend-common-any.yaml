@@ -12,16 +12,16 @@ on:
 jobs:
   backend-semgrep:
     name: Backend Semgrep
-    uses: ./.github/actions/backend-semgrep.yaml
+    uses: ./.github/workflows/backend-semgrep.yaml
   code-analysis:
     name: Code Analysis
-    uses: ./.github/actions/code-analysis.yaml
+    uses: ./.github/workflows/code-analysis.yaml
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
       REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
   unit-test:
     name: Unit Test
-    uses: ./.github/actions/unit-test.yaml
+    uses: ./.github/workflows/unit-test.yaml
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
       REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}

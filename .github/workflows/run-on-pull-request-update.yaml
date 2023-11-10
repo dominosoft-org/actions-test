@@ -112,5 +112,5 @@ jobs:
     needs: create-comment
     uses: ./.github/workflows/comment-bot.yaml
     with:
-      action_name: 'Code Summary'
+      action_name: '🙏Code Summary'
       comment: ${{ needs.create-comment.outputs.comment }}

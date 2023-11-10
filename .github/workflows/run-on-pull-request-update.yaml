@@ -97,15 +97,15 @@ jobs:
       - name: Create comment
         id: comment
         run: |
-          merged-comment=''
-          frontend-license-check=${{ needs.pnpm-lock.outputs.license-check }}
-          if [ "$frontend-license-check" != "" ]; then
-            merged-comment+=$frontend-license-check
-            merged-comment+="\n"
+          MERGED_COMMENT=''
+          FRONTEND_LICENSE_CHECK=${{ needs.pnpm-lock.outputs.license-check }}
+          if [ "$FRONTEND_LICENSE_CHECK" != "" ]; then
+          MERGED_COMMENT+=$FRONTEND_LICENSE_CHECK
+          MERGED_COMMENT+="\n"
           fi
-          echo "merged-comment=${merged-comment}" > "$GITHUB_OUTPUT"
+          echo "MERGED_COMMENT=${MERGED_COMMENT}" > "$GITHUB_OUTPUT"
       - name: Comment to Pull Request
         uses: ./github/workflows/comment_bot.yaml
         with:
           action_name: 'Code Summary'
-          comment: ${{ steps.comment.outputs.merged-comment }}
+          comment: ${{ steps.comment.outputs.MERGED_COMMENT }}

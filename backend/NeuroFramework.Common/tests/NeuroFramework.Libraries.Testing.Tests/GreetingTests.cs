@@ -12,9 +12,4 @@ public class GreetingTests {
     var greeting = new Greeting("John");
     Assert.AreEqual("Bye John", greeting.Bye());
   }
-  [TestMethod]
-  public void FailedTest() {
-    var greeting = new Greeting("John");
-    Assert.AreNotEqual("Bye John", greeting.Bye());
-  }
 }

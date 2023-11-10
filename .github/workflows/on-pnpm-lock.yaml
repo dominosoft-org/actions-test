@@ -10,4 +10,4 @@ on:
 jobs:
   frontend-license-check:
     name: Frontend License Check✅
-    uses: ./.github/actions/frontend-license-check.yaml
+    uses: ./.github/workflows/frontend-license-check.yaml

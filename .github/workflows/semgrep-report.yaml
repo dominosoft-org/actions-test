@@ -16,8 +16,8 @@ on:
         value: ${{ jobs.report.outputs.reject }}
       latestsarif:
         value: ${{ jobs.report.outputs.latestsarif }}
-      finding:
-        value: ${{ jobs.report.outputs.finding }}
+      findings:
+        value: ${{ jobs.report.outputs.findings }}
       message:
         value: ${{ jobs.report.outputs.message }}
       capitalized:
@@ -30,7 +30,7 @@ jobs:
       length: ${{ steps.ruleinfo.outputs.length }}
       reject: ${{ steps.ruleinfo.outputs.reject }}
       latestsarif: ${{ steps.ruleinfo.outputs.latestsarif }}
-      finding: ${{ steps.extract.outputs.finding }}
+      findings: ${{ steps.extract.outputs.findings }}
       message: ${{ steps.extract.outputs.message }}
       capitalized: ${{ steps.string.outputs.capitalized }}
 

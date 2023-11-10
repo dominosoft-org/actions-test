@@ -65,14 +65,14 @@ jobs:
         run: |
           # すべてのlc.csvの結果から重複を排除した配列を取得する。
           lines=$(sort -u -s ./frontend/*/lc.csv)
-          result="### 📄Frontend License Check\\n\\n"
+          result="### 📄Frontend License Check\n\n"
           if [ -z "$lines" ]; then
             # すべてのライセンスがOKの場合
             result+="✅All OK."
           else
             # ライセンスNGがある場合
-            log+="🤷Is it safe to use these libraries? Reviewers must judge that.\\n\\n"
-            log=$(echo "- ${lines}" | sed -n '/,/,$p')
+            log="🤷Is it safe to use these libraries? Reviewers must judge that.\n\n"
+            log+=$(echo "- ${lines}" | sed -n '/,/,$p')
             log="${log//$'\n'/\\n}"
             result+="$log"
           fi

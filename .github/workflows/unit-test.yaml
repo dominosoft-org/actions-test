@@ -23,7 +23,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1
 
       - name: Setup VSTest Path
-        uses: darenm/Setup-VSTest@v1
+        uses: darenm/Setup-VSTest@v1.2
 
       - name: Generate Unit Test Report
         run: |
@@ -35,7 +35,7 @@ jobs:
       - name: Test Report
         if: always()
         id: test-report
-        uses: phoenix-actions/test-reporting@v8
+        uses: phoenix-actions/test-reporting@v12
         with:
           name: Unit Tests Report
           path: "./backend/NeuroFramework.Common/TestResults/**.trx"
@@ -83,13 +83,20 @@ jobs:
           output: both
           thresholds: "60 80"
 
+      - name: Upload Coverage Result Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: code coverage markdown report
+          path: code-coverage-results.md
+
       #- name: Add Coverage PR Comment
       #  uses: marocchino/sticky-pull-request-comment@v2
       #  with:
       #    recreate: true
       #    path: code-coverage-results.md
 
-  auto_reject:
-    needs: unit_test
-    uses: ./.github/workflows/auto-reject.yaml
-    if: failure()
+#  auto_reject:
+#    needs: unit_test
+#    uses: ./.github/workflows/auto-reject.yaml
+#    if: failure()

@@ -97,8 +97,8 @@ jobs:
       - name: Create comment
         id: comment
         run: |
-          MERGED_COMMENT=''
-          FRONTEND_LICENSE_CHECK=${{ needs.pnpm-lock.outputs.license-check }}
+          MERGED_COMMENT=""
+          FRONTEND_LICENSE_CHECK="${{ needs.pnpm-lock.outputs.license-check }}"
           if [ "$FRONTEND_LICENSE_CHECK" != "" ]; then
           MERGED_COMMENT+=$FRONTEND_LICENSE_CHECK
           MERGED_COMMENT+="\n"

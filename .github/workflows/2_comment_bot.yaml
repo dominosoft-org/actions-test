@@ -17,8 +17,7 @@ jobs:
       - name: Create comments
         run: |
           touch comments
-          echo -e "## ${{ inputs.title }}\\n" >> comments
-          echo; >> comments
+          echo -e "## ${{ inputs.title }}" >> comments
           echo -e ${{ inputs.comment }} >> comments
 
       - name: Post comments

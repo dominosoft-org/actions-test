@@ -97,7 +97,7 @@ jobs:
           comments=("${{ needs.back_csproj.outputs.comment }}" "${{ needs.front.outputs.comment }}" "${{ needs.front_pnpm.outputs.comment }}")
           # 配列の要素を改行で結合して出力
           merged_comment=$(IFS="\n\n"; echo "${comments[*]}")
-          echo "comment=${merged_comment}" > "$GITHUB_OUTPUT"
+          echo 'comment="${merged_comment}"' > "$GITHUB_OUTPUT"
 
   output_comment:
     if: ${{ always() && github.event_name == 'pull_request' }}

@@ -1,4 +1,4 @@
-name: generate semgrep report
+name: 2_semgrep_analyze
 
 on:
   workflow_call:
@@ -25,20 +25,21 @@ jobs:
   report:
     runs-on: ubuntu-latest
     outputs:
-      length: ${{ steps.ruleinfo.outputs.length }}
-      reject: ${{ steps.ruleinfo.outputs.reject }}
-      latestsarif: ${{ steps.ruleinfo.outputs.latestsarif }}
+      length: ${{ steps.rule_info.outputs.length }}
+      reject: ${{ steps.rule_info.outputs.reject }}
+      latestsarif: ${{ steps.rule_info.outputs.latestsarif }}
       findings: ${{ steps.extract.outputs.findings }}
       message: ${{ steps.extract.outputs.message }}
-      capitalized: ${{ steps.string.outputs.capitalized }}
+      capitalized: ${{ steps.case.outputs.capitalized }}
 
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
         with:
           name: semgrep ${{ inputs.location }} report
           path: semgrepreport/
       - name: Generate Rule Info For Semgrep Findings
-        id: ruleinfo
+        id: rule_info
         run: |
           cd ./semgrepreport/${{ inputs.location }}
           cp ${{ inputs.location }}.sarif ../devtools/semgrep/
@@ -46,14 +47,14 @@ jobs:
           location="${{ inputs.location }}" descriptionKey="${{ inputs.descriptionKey }}" bash semgrep-rule-info-generation.sh
 
       - name: Generate Semgrep Finding Report
-        if: steps.ruleinfo.outputs.length > 0
+        if: steps.rule_info.outputs.length > 0
         id: extract
         run: |
           cd ./semgrepreport/devtools/semgrep/
-          latestsarif="${{ steps.ruleinfo.outputs.latestsarif }}" bash semgrep-report-generation.sh
+          latestsarif="${{ steps.rule_info.outputs.latestsarif }}" bash semgrep-report-generation.sh
 
-      - name: Upper Location
-        id: string
+      - name: Change Location Case
+        id: case
         uses: ASzc/change-string-case-action@v5
         with:
           string: ${{ inputs.location }}

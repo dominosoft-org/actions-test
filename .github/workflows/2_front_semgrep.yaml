@@ -1,10 +1,10 @@
-name: frontend semgrep
+name: 2_front_semgrep
 
 on:
   workflow_call:
     outputs:
-      result:
-        value: ${{ jobs.create-table.outputs.comment }}
+      comment:
+        value: ${{ jobs.create_comment.outputs.comment }}
 
 jobs:
   semgrep:
@@ -33,26 +33,26 @@ jobs:
             ./devtools/semgrep/semgrep-rule-info-generation.sh
             ./devtools/semgrep/semgrep-report-generation.sh
 
-  analyze-report:
-    name: Analyze Report
+  analyze_result:
+    name: Analyze Semgrep Result
     needs: semgrep
-    uses: ./.github/workflows/semgrep-report.yaml
+    uses: ./.github/workflows/2_semgrep_analyze.yaml
     with:
       location: frontend
       descriptionKey: .fullDescription.text
 
-  create-table:
+  create_comment:
     uses: ./.github/workflows/semgrep-table.yaml
-    needs: analyze-report
+    needs: analyze_result
     with:
-      length: ${{ needs.analyze-report.outputs.length }}
-      location: ${{ needs.analyze-report.outputs.location }}
-      findings: ${{ needs.analyze-report.outputs.findings }}
-      message: ${{ needs.analyze-report.outputs.message }}
+      length: ${{ needs.analyze_result.outputs.length }}
+      location: ${{ needs.analyze_result.outputs.location }}
+      findings: ${{ needs.analyze_result.outputs.findings }}
+      message: ${{ needs.analyze_result.outputs.message }}
 
-  judge-reject:
-    needs: analyze-report
-    if: needs.analyze-report.outputs.reject > 0
+  judge_fail:
+    needs: analyze_result
+    if: needs.analyze_result.outputs.reject > 0
     runs-on: ubuntu-latest
     steps:
-      - run: exit 1
+      - run: exit 1 # 0以外の値を返すとジョブは失敗となる

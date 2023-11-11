@@ -1,17 +1,16 @@
-name: frontend license check
+name: 2_front_license
 
 on:
   workflow_call:
     outputs:
-      result:
-        description: "ライセンスチェックの結果を格納する。"
-        value: ${{ jobs.build.outputs.result }}
+      comment:
+        value: ${{ jobs.check.outputs.comment }}
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     outputs:
-      result: ${{ steps.log.outputs.result }}
+      comment: ${{ steps.create_comment.outputs.comment }}
     steps:
       - name: Checkout🛎️
         uses: actions/checkout@v4
@@ -26,14 +25,14 @@ jobs:
           version: 8
           run_install: false
       - name: Get pnpm store directory💾
-        id: pnpm-cache
+        id: pnpm_cache
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
       - name: Setup pnpm cache⚡
         uses: actions/cache@v3
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          path: ${{ steps.pnpm_cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('./frontend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
@@ -60,8 +59,8 @@ jobs:
             # ヘッダーは不要なので1行目を削除しておく
             sed -e '1d' -i ./lc.csv
           done
-      - name: Output Logs🖊️
-        id: log
+      - name: Create Comment🖊️
+        id: create_comment
         run: |
           # すべてのlc.csvの結果から重複を排除した配列を取得する。
           lines=$(sort -u -s ./frontend/*/lc.csv)
@@ -76,4 +75,4 @@ jobs:
             log="${log//$'\n'/\\n}"
             result+="$log"
           fi
-          echo "result=${result}" >> "$GITHUB_OUTPUT"
+          echo "comment=${result}" >> "$GITHUB_OUTPUT"

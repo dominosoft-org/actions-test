@@ -5,21 +5,9 @@ on:
   workflow_call:
     outputs:
       comment:
-        value: ${{ jobs.create_comment.outputs.comment }}
+        value: ${{ jobs.front_semgrep.outputs.comment }}
 
 jobs:
   front_semgrep:
     name: Frontend Semgrep✅
     uses: ./.github/workflows/2_front_semgrep.yaml
-
-  create_comment:
-    runs-on: ubuntu-latest
-    needs: front_semgrep
-    if: ${{ !cancelled() }}
-    outputs:
-      comment: ${{ steps.comment.outputs.comment }}
-    steps:
-      - id: comment
-        run: |
-          comment="${{ needs.front_semgrep.outputs.comment }}"
-          echo "comment=${comment}" > "$GITHUB_OUTPUT"

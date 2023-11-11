@@ -45,7 +45,7 @@ jobs:
     uses: ./.github/workflows/2_semgrep_create_comment.yaml
     needs: analyze_result
     with:
-      length: ${{ needs.analyze_result.outputs.length }}
+      length: $(${{ needs.analyze_result.outputs.length }}) # 文字列をそのまま渡すとエラーになるので、$()で囲んで数値化する
       location: ${{ needs.analyze_result.outputs.location }}
       findings: ${{ needs.analyze_result.outputs.findings }}
       message: ${{ needs.analyze_result.outputs.message }}

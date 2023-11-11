@@ -1,4 +1,4 @@
-name: 2_comment_bot
+name: 2_post_comment
 
 on:
   workflow_call:

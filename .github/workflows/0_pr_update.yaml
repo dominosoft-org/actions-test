@@ -97,7 +97,7 @@ jobs:
           comments=('${{ needs.back_csproj.outputs.comment }}' '${{ needs.front.outputs.comment }}' '${{ needs.front_pnpm.outputs.comment }}')
           for i in ${!comments[@]}; do
             if [ "${comments[$i]}" != "" ]; then
-              merged_comment+=${comments[$i]}\n\n"
+              merged_comment+="${comments[$i]}\n\n"
             fi
           done
           echo "comment=$(printf %q ${merged_comment})" > "$GITHUB_OUTPUT"

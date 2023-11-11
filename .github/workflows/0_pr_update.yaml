@@ -100,7 +100,8 @@ jobs:
               merged_comment+="${comments[$i]}\n\n"
             fi
           done
-          echo "comment=$(printf %q ${merged_comment})" > "$GITHUB_OUTPUT"
+          comment=$(printf %q "${merged_comment}")
+          echo "comment=${comment})" > "$GITHUB_OUTPUT"
 
   output_comment:
     if: ${{ always() && github.event_name == 'pull_request' }}

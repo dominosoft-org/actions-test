@@ -4,7 +4,7 @@ on:
   workflow_call:
     outputs:
       result:
-        value: ${{ jobs.analyze-report.outputs.result }}
+        value: ${{ jobs.create-table.outputs.comment }}
 
 jobs:
   semgrep:
@@ -32,6 +32,7 @@ jobs:
             ./frontend/frontend.sarif
             ./devtools/semgrep/semgrep-rule-info-generation.sh
             ./devtools/semgrep/semgrep-report-generation.sh
+
   analyze-report:
     name: Analyze Report
     needs: semgrep
@@ -39,3 +40,19 @@ jobs:
     with:
       location: frontend
       descriptionKey: .fullDescription.text
+
+  create-table:
+    uses: ./.github/workflows/semgrep-table.yaml
+    needs: analyze-report
+    with:
+      length: ${{ needs.analyze-report.outputs.length }}
+      location: ${{ needs.analyze-report.outputs.location }}
+      findings: ${{ needs.analyze-report.outputs.findings }}
+      message: ${{ needs.analyze-report.outputs.message }}
+
+  judge-reject:
+    needs: analyze-report
+    if: needs.analyze-report.outputs.reject > 0
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 1

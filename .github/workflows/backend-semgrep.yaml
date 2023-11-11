@@ -3,18 +3,8 @@ name: backend semgrep
 on:
   workflow_call:
     outputs:
-      length:
-        value: ${{ jobs.analyze-report.outputs.length }}
-      reject:
-        value: ${{ jobs.analyze-report.outputs.reject }}
-      latestsarif:
-        value: ${{ jobs.analyze-report.outputs.latestsarif }}
-      finding:
-        value: ${{ jobs.analyze-report.outputs.finding }}
-      message:
-        value: ${{ jobs.analyze-report.outputs.message }}
-      capitalized:
-        value: ${{ jobs.analyze-report.outputs.capitalized }}
+      result:
+        value: ${{ jobs.create-table.outputs.comment }}
 
 jobs:
   semgrep:
@@ -43,6 +33,7 @@ jobs:
             ./backend/backend.sarif
             ./devtools/semgrep/semgrep-rule-info-generation.sh
             ./devtools/semgrep/semgrep-report-generation.sh
+
   analyze-report:
     name: Analyze Report
     needs: semgrep
@@ -50,3 +41,19 @@ jobs:
     with:
       location: backend
       descriptionKey: .shortDescription.text
+
+  create-table:
+    uses: ./.github/workflows/semgrep-table.yaml
+    needs: analyze-report
+    with:
+      length: ${{ needs.analyze-report.outputs.length }}
+      location: ${{ needs.analyze-report.outputs.location }}
+      findings: ${{ needs.analyze-report.outputs.findings }}
+      message: ${{ needs.analyze-report.outputs.message }}
+
+  judge-reject:
+    needs: analyze-report
+    if: needs.analyze-report.outputs.reject > 0
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 1

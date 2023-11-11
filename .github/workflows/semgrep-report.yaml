@@ -10,8 +10,16 @@ on:
         required: true
         type: string
     outputs:
-      result:
-        value: ${{ jobs.comment_pr.outputs.comment }}
+      length:
+        value: ${{ jobs.report.outputs.length }}
+      reject:
+        value: ${{ jobs.report.outputs.reject }}
+      location:
+        value: ${{ jobs.report.outputs.capitalized }}
+      findings:
+        value: ${{ jobs.report.outputs.findings }}
+      message:
+        value: ${{ jobs.report.outputs.message }}
 
 jobs:
   report:
@@ -49,18 +57,3 @@ jobs:
         uses: ASzc/change-string-case-action@v5
         with:
           string: ${{ inputs.location }}
-  comment_pr:
-    uses: ./.github/workflows/semgrep-table.yaml
-    needs: report
-    with:
-      length: ${{ needs.report.outputs.length }}
-      location: ${{ needs.report.outputs.capitalized }}
-      findings: ${{ needs.report.outputs.findings }}
-      message: ${{ needs.report.outputs.message }}
-
-  judge-reject:
-    needs: report
-    if: needs.report.outputs.reject > 0
-    runs-on: ubuntu-latest
-    steps:
-      - run: exit 1

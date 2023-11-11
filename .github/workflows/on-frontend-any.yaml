@@ -17,7 +17,7 @@ jobs:
     needs: frontend-semgrep
     if: ${{ !cancelled() }}
     outputs:
-      result: ${{ needs.frontend-semgrep.outputs.result }}
+      result: ${{ steps.comment.outputs.comment }}
     steps:
       - id: comment
         run: |

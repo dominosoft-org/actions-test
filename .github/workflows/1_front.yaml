@@ -1,25 +1,25 @@
-name: run on changing frontend any code
+name: 1_front
 
 on:
   workflow_dispatch:
   workflow_call:
     outputs:
-      result:
-        value: ${{ jobs.comment.outputs.result }}
+      comment:
+        value: ${{ jobs.create_omment.outputs.comment }}
 
 jobs:
-  frontend-semgrep:
+  semgrep:
     name: Frontend Semgrep✅
     uses: ./.github/workflows/frontend-semgrep.yaml
 
-  comment:
+  create_omment:
     runs-on: ubuntu-latest
-    needs: frontend-semgrep
+    needs: semgrep
     if: ${{ !cancelled() }}
     outputs:
-      result: ${{ steps.comment.outputs.comment }}
+      comment: ${{ steps.comment.outputs.comment }}
     steps:
       - id: comment
         run: |
-          comment="${{ needs.frontend-semgrep.outputs.result }}"
+          comment="${{ needs.semgrep.outputs.result }}"
           echo "comment=${comment}" > "$GITHUB_OUTPUT"

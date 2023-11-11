@@ -1,9 +1,9 @@
-name: comment on pull request
+name: 2_comment_bot
 
 on:
   workflow_call:
     inputs:
-      action_name:
+      title:
         required: true
         type: string
       comment:
@@ -13,19 +13,15 @@ on:
 jobs:
   comment:
     runs-on: ubuntu-latest
-    env:
-      ACTIONS_NAME: ${{ inputs.action_name }}
-      COMMENT: ${{ inputs.comment }}
     steps:
       - name: Create comments
         run: |
           touch comments
-          echo "## ${ACTIONS_NAME}\\n" >> comments
+          echo -e "## ${{ inputs.title }}\\n" >> comments
           echo; >> comments
-          echo -e ${COMMENT} >> comments
+          echo -e ${{ inputs.comment }} >> comments
 
       - name: Post comments
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          URL: ${{ github.event.pull_request.html_url }}
-        run: gh pr comment -F ./comments "${URL}"
+        run: gh pr comment -F ./comments "${{ github.event.pull_request.html_url }}"

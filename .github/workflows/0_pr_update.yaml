@@ -1,0 +1,108 @@
+name: 0_pr_update
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - "main"
+    types:
+      - opened
+      - synchronize
+    # pathsによるfilterは、dorny/paths-filterで行う
+
+jobs:
+  # プルリクエストの更新時に、変更されたファイルを解析し、走らせるワークフローを選択する。
+  changes:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    outputs:
+      back: ${{ steps.filters.outputs.back }}
+      back_common: ${{ steps.filters.outputs.back_common }}
+      back_fakes: ${{ steps.filters.outputs.back_fakes }}
+      back_csproj: ${{ steps.filters.outputs.back_csproj }}
+      front: ${{ steps.filters.outputs.front }}
+      front_pnpm: ${{ steps.filters.outputs.front_pnpm }}
+      docfx: ${{ steps.changes.outputs.docfx }}
+    steps:
+      - name: Checkout🛎️
+        uses: actions/checkout@v4
+      - name: Filter changes🔎
+        uses: dorny/paths-filter@v2
+        id: filters
+        with:
+          filters: |
+            back:
+              - 'backend/**'
+            back_common:
+              - 'backend/NeuroFramework.Common/**'
+            back_fakes:
+              - 'backend/FakesAssemblies/**'
+            back_csproj:
+              - 'backend/NeuroFramework.Common/**/*.csproj'
+            front:
+              - 'frontend/**'
+            front_pnpm:
+              - 'frontend/**/pnpm-lock.yaml'
+            docfx:
+            - 'doc/docfx/**'
+
+  back:
+    needs: changes
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.back == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "do backend-any"
+
+  back_common:
+    needs: changes
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.back_common == 'true' }}
+    uses: ./.github/workflows/1_back_common.yaml
+    secrets:
+      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
+      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+
+  back_fakes:
+    needs: changes
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.back_fakes == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "do backend-fakes-any"
+
+  back_csproj:
+    needs: changes
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.back_csproj == 'true' }}
+    uses: ./.github/workflows/1_back_csproj.yaml
+
+  front:
+    needs: changes
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.front == 'true' }}
+    uses: ./.github/workflows/1_front.yaml
+
+  front_pnpm:
+    needs: changes
+    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.front_pnpm == 'true' }}
+    uses: ./.github/workflows/1_front_pnpm.yaml
+
+  create_comment:
+    if: ${{ always() && github.event_name == 'pull_request' }}
+    needs: [back, back_common, back_fakes, back_csproj, front, front_pnpm]
+    runs-on: ubuntu-latest
+    outputs:
+      comment: ${{ steps.comment.outputs.comment }}
+    steps:
+      - name: Create comment
+        id: comment
+        run: |
+          # 各ジョブからのコメントを取得して配列に追加
+          comments=("${{ needs.back_csproj.outputs.comment }}" "${{ needs.front.outputs.comment }}" "${{ needs.front_pnpm.outputs.comment }}")
+          # 配列の要素を改行で結合して出力
+          merged_comment=$(IFS=$'\n'; echo "${comments[*]}")
+          echo "comment=$merged_comment" > "$GITHUB_OUTPUT"
+
+  output_comment:
+    if: ${{ always() && github.event_name == 'pull_request' }}
+    needs: create_comment
+    uses: ./.github/workflows/2_comment_bot.yaml
+    with:
+      title: "🙏Code Summary"
+      comment: ${{ needs.create_comment.outputs.comment }}

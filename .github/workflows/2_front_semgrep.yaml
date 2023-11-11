@@ -42,7 +42,7 @@ jobs:
       descriptionKey: .fullDescription.text
 
   create_comment:
-    uses: ./.github/workflows/semgrep-table.yaml
+    uses: ./.github/workflows/2_semgrep_create_comment.yaml
     needs: analyze_result
     with:
       length: ${{ needs.analyze_result.outputs.length }}

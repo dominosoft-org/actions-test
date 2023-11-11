@@ -5,7 +5,7 @@ on:
     inputs:
       length:
         required: true
-        type: number
+        type: string
       location:
         required: true
         type: string
@@ -40,6 +40,7 @@ jobs:
           json: ${{ inputs.message }}
 
       - name: Create Comment
+        if: always()
         id: comment
         run: |
           comment="### 📄${{ inputs.location }} Semgrep Analysis\n\n"

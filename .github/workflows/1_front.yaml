@@ -1,0 +1,13 @@
+name: 1_front
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    outputs:
+      comment:
+        value: ${{ jobs.front_semgrep.outputs.comment }}
+
+jobs:
+  front_semgrep:
+    name: Frontend Semgrep✅
+    uses: ./.github/workflows/2_front_semgrep.yaml

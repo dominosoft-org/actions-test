@@ -1,4 +1,4 @@
-name: run on changing backend/NeuroFramework.Common/ any code
+name: 1_back_common
 
 on:
   workflow_dispatch:
@@ -8,6 +8,9 @@ on:
         required: true
       REPO_ACCESS_TOKEN:
         required: true
+    outputs:
+      comment:
+        value: "under construction"
 
 jobs:
   backend-semgrep:

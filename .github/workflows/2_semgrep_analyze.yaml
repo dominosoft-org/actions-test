@@ -1,0 +1,60 @@
+name: 2_semgrep_analyze
+
+on:
+  workflow_call:
+    inputs:
+      location:
+        required: true
+        type: string
+      descriptionKey:
+        required: true
+        type: string
+    outputs:
+      length:
+        value: ${{ jobs.report.outputs.length }}
+      reject:
+        value: ${{ jobs.report.outputs.reject }}
+      location:
+        value: ${{ jobs.report.outputs.capitalized }}
+      findings:
+        value: ${{ jobs.report.outputs.findings }}
+      message:
+        value: ${{ jobs.report.outputs.message }}
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    outputs:
+      length: ${{ steps.rule_info.outputs.length }}
+      reject: ${{ steps.rule_info.outputs.reject }}
+      latestsarif: ${{ steps.rule_info.outputs.latestsarif }}
+      findings: ${{ steps.extract.outputs.findings }}
+      message: ${{ steps.extract.outputs.message }}
+      capitalized: ${{ steps.case.outputs.capitalized }}
+
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: semgrep ${{ inputs.location }} report
+          path: semgrepreport/
+      - name: Generate Rule Info For Semgrep Findings
+        id: rule_info
+        run: |
+          cd ./semgrepreport/${{ inputs.location }}
+          cp ${{ inputs.location }}.sarif ../devtools/semgrep/
+          cd ../devtools/semgrep/
+          location="${{ inputs.location }}" descriptionKey="${{ inputs.descriptionKey }}" bash semgrep-rule-info-generation.sh
+
+      - name: Generate Semgrep Finding Report
+        if: steps.rule_info.outputs.length > 0
+        id: extract
+        run: |
+          cd ./semgrepreport/devtools/semgrep/
+          latestsarif="${{ steps.rule_info.outputs.latestsarif }}" bash semgrep-report-generation.sh
+
+      - name: Change Location Case
+        id: case
+        uses: ASzc/change-string-case-action@v5
+        with:
+          string: ${{ inputs.location }}

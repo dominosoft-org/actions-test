@@ -1,0 +1,13 @@
+name: 1_back_csproj
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    outputs:
+      comment:
+        value: ${{ jobs.license_check.outputs.result }}
+
+jobs:
+  license_check:
+    name: Backend License Check✅
+    uses: ./.github/workflows/2_back_license.yaml

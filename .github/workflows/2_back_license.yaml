@@ -1,4 +1,4 @@
-name: backend license check
+name: 2_back_license
 
 on:
   workflow_call:

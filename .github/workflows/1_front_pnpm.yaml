@@ -1,0 +1,13 @@
+name: 1_front_pnpm
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    outputs:
+      comment:
+        value: ${{ jobs.license_check.outputs.comment }}
+
+jobs:
+  license_check:
+    name: Frontend License Check✅
+    uses: ./.github/workflows/2_front_license.yaml

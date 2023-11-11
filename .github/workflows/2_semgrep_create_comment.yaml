@@ -1,0 +1,53 @@
+name: 2_semgrep_create_comment
+
+on:
+  workflow_call:
+    inputs:
+      length:
+        required: true
+        type: string
+      location:
+        required: true
+        type: string
+      findings:
+        required: true
+        type: string
+      message:
+        required: true
+        type: string
+    outputs:
+      comment:
+        value: ${{ jobs.create_comment.outputs.comment }}
+
+jobs:
+  create_comment:
+    runs-on: ubuntu-latest
+    outputs:
+      comment: ${{ steps.comment.outputs.comment }}
+    steps:
+      - name: Generate Findings Table
+        if: ${{ inputs.length > 0 }}
+        uses: buildingcash/json-to-markdown-table-action@v1
+        id: findings_table
+        with:
+          json: ${{ inputs.findings }}
+
+      - name: Generate Message Table
+        if: ${{ inputs.length > 0 }}
+        uses: buildingcash/json-to-markdown-table-action@v1
+        id: message_table
+        with:
+          json: ${{ inputs.message }}
+
+      - name: Create Comment
+        if: always()
+        id: comment
+        run: |
+          comment="### 📄${{ inputs.location }} Semgrep Analysis\n\n"
+          if [ ${{ inputs.length }} -eq 0 ]; then
+            comment+="✅Congratulations! There is no findings"
+          else
+          comment+="#### Summary Table\n\n${{ steps.findings_table.outputs.table }}\n\n"
+          comment+="#### Findings\n\n${{ steps.message_table.outputs.table }}"
+          fi
+          echo "comment=${comment}" > "$GITHUB_OUTPUT"

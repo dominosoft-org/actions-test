@@ -1,0 +1,26 @@
+name: 2_post_comment
+
+on:
+  workflow_call:
+    inputs:
+      title:
+        required: true
+        type: string
+      comment:
+        required: true
+        type: string
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create comments
+        run: |
+          touch comments
+          echo -e "## ${{ inputs.title }}" >> comments
+          echo -e "${{ inputs.comment }}" >> comments
+
+      - name: Post comments
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr comment -F ./comments "${{ github.event.pull_request.html_url }}"

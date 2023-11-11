@@ -1,20 +1,10 @@
-name: frontend semgrep
+name: 2_front_semgrep
 
 on:
   workflow_call:
     outputs:
-      length:
-        value: ${{ jobs.analyze-report.outputs.length }}
-      reject:
-        value: ${{ jobs.analyze-report.outputs.reject }}
-      latestsarif:
-        value: ${{ jobs.analyze-report.outputs.latestsarif }}
-      findings:
-        value: ${{ jobs.analyze-report.outputs.findings }}
-      message:
-        value: ${{ jobs.analyze-report.outputs.message }}
-      capitalized:
-        value: ${{ jobs.analyze-report.outputs.capitalized }}
+      comment:
+        value: ${{ jobs.create_comment.outputs.comment }}
 
 jobs:
   semgrep:
@@ -30,7 +20,7 @@ jobs:
           echo "args=$(echo $semgrep_command_args)" >> "$GITHUB_OUTPUT"
       - name: Scan🌈
         id: scan
-        uses: docker://returntocorp/semgrep:1.48.0
+        uses: docker://returntocorp/semgrep
         with:
           entrypoint: "semgrep"
           args: ${{ steps.create-command.outputs.args }}
@@ -42,10 +32,27 @@ jobs:
             ./frontend/frontend.sarif
             ./devtools/semgrep/semgrep-rule-info-generation.sh
             ./devtools/semgrep/semgrep-report-generation.sh
-  analyze-report:
-    name: Analyze Report
+
+  analyze_result:
+    name: Analyze Semgrep Result
     needs: semgrep
-    uses: ./.github/workflows/semgrep-report.yaml
+    uses: ./.github/workflows/2_semgrep_analyze.yaml
     with:
       location: frontend
       descriptionKey: .fullDescription.text
+
+  create_comment:
+    uses: ./.github/workflows/2_semgrep_create_comment.yaml
+    needs: analyze_result
+    with:
+      length: ${{ needs.analyze_result.outputs.length }}
+      location: ${{ needs.analyze_result.outputs.location }}
+      findings: ${{ needs.analyze_result.outputs.findings }}
+      message: ${{ needs.analyze_result.outputs.message }}
+
+  judge_fail:
+    needs: analyze_result
+    if: needs.analyze_result.outputs.reject > 0
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 1 # 0以外の値を返すとジョブは失敗となる

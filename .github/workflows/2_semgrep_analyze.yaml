@@ -34,10 +34,12 @@ jobs:
 
     steps:
       - name: Download Artifact
+        id: download_artifact
         uses: actions/download-artifact@v3
         with:
           name: semgrep ${{ inputs.location }} report
           path: semgrepreport/
+
       - name: Generate Rule Info For Semgrep Findings
         id: rule_info
         run: |
@@ -56,5 +58,6 @@ jobs:
       - name: Change Location Case
         id: case
         uses: ASzc/change-string-case-action@v5
+
         with:
           string: ${{ inputs.location }}

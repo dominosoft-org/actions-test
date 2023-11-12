@@ -1,15 +1,15 @@
-name: Comment Artifact URL on PR
+name: 2_append_artifact_url
 
 on:
+  # artifactのURLはJob実行中には取得できないため、workflow_runのcompletedイベントを利用する
   workflow_run:
     workflows:
-      - "Semgrep Frontend"
-      - "Semgrep Backend"
+      - "0_pr_update"
     types:
       - "completed"
 
 jobs:
-  comment-on-pr:
+  add_comment:
     if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
@@ -67,11 +67,10 @@ jobs:
           issue-number: ${{ env.PR_NUMBER }}
           comment-id: ${{ steps.find-comment.outputs.comment-id }}
           body: |-
-            ## Preview
+            #### Semgrep Artifact
 
             ![badge]
             You can download the semgrep sarif file from the link below.
-
             Please note that file only stay for around 90 days!
 
             | Name     | Link                    |

@@ -42,6 +42,7 @@ jobs:
       descriptionKey: .fullDescription.text
 
   create_comment:
+    name: Create Comment
     uses: ./.github/workflows/2_semgrep_create_comment.yaml
     needs: analyze_result
     with:

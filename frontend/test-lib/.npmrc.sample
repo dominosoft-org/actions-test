@@ -1,4 +1,2 @@
 //npm.pkg.github.com/:_authToken=${GITHUB_PKG_NFW_AUTH_TOKEN}
 @dominosoft-org:registry=https://npm.pkg.github.com
-
-#test

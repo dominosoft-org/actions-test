@@ -53,5 +53,5 @@ jobs:
           comment+="#### Summary Table\n\n${{ steps.findings_table.outputs.table }}\n\n"
           comment+="#### Findings\n\n${{ steps.message_table.outputs.table }}\n\n"
           fi
-          comment+=${{ inputs.artifact_comment }}
+          comment+="${{ inputs.artifact_comment }}"
           echo "comment=${comment}" > "$GITHUB_OUTPUT"

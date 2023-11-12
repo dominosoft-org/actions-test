@@ -20,6 +20,8 @@ on:
         value: ${{ jobs.report.outputs.findings }}
       message:
         value: ${{ jobs.report.outputs.message }}
+      artifact_comment:
+        value: ${{ jobs.report.outputs.artifact_comment }}
 
 jobs:
   report:
@@ -31,13 +33,30 @@ jobs:
       findings: ${{ steps.extract.outputs.findings }}
       message: ${{ steps.extract.outputs.message }}
       capitalized: ${{ steps.case.outputs.capitalized }}
+      artifact_comment: ${{ steps.create_artifact_comment.outputs.comment }}
 
     steps:
       - name: Download Artifact
+        id: download_artifact
         uses: actions/download-artifact@v3
         with:
           name: semgrep ${{ inputs.location }} report
           path: semgrepreport/
+
+      - name: Create Artifact Link
+        id: create_artifact_comment
+        run: |
+          comment="#### Semgrep Artifact\n\n"
+          comment+="![badge]\n"
+          comment+="You can download the semgrep sarif file from the link below.\n"
+          comment+="Please note that file only stay for around 90 days!\n\n"
+          comment+="| Name       | Link                    |\n"
+          comment+="| ---------- | ----------------------- |\n"
+          comment+="| Commit     | ${{ github.sha }}       |\n"
+          comment+="| Artifact   | ${{ steps.download_artifact.outputs.download-path }}     |\n\n"
+          comment+="[badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge"
+          echo "comment=$(echo ${comment})" >> "$GITHUB_OUTPUT"
+
       - name: Generate Rule Info For Semgrep Findings
         id: rule_info
         run: |
@@ -56,5 +75,6 @@ jobs:
       - name: Change Location Case
         id: case
         uses: ASzc/change-string-case-action@v5
+
         with:
           string: ${{ inputs.location }}

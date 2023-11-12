@@ -42,6 +42,7 @@ jobs:
       descriptionKey: .fullDescription.text
 
   create_comment:
+    name: Create Comment
     uses: ./.github/workflows/2_semgrep_create_comment.yaml
     needs: analyze_result
     with:
@@ -49,6 +50,7 @@ jobs:
       location: ${{ needs.analyze_result.outputs.location }}
       findings: ${{ needs.analyze_result.outputs.findings }}
       message: ${{ needs.analyze_result.outputs.message }}
+      artifact_comment: ${{ needs.analyze_result.outputs.artifact_comment }}
 
   judge_fail:
     needs: analyze_result

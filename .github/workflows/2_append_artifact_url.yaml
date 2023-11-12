@@ -55,7 +55,7 @@ jobs:
         with:
           issue-number: ${{ env.PR_NUMBER }}
           comment-author: "github-actions[bot]"
-          body-includes: "Summary Table"
+          body-includes: "🙏Code Summary"
           direction: last
 
       - name: Update Comment

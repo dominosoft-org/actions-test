@@ -15,9 +15,6 @@ on:
       message:
         required: true
         type: string
-      artifact_comment:
-        required: true
-        type: string
     outputs:
       comment:
         value: ${{ jobs.create_comment.outputs.comment }}
@@ -53,5 +50,4 @@ jobs:
           comment+="#### Summary Table\n\n${{ steps.findings_table.outputs.table }}\n\n"
           comment+="#### Findings\n\n${{ steps.message_table.outputs.table }}\n\n"
           fi
-          comment+="${{ inputs.artifact_comment }}"
           echo "comment=${comment}" > "$GITHUB_OUTPUT"

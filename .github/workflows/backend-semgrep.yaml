@@ -50,7 +50,6 @@ jobs:
       location: ${{ needs.analyze_result.outputs.location }}
       findings: ${{ needs.analyze_result.outputs.findings }}
       message: ${{ needs.analyze_result.outputs.message }}
-      artifact_comment: "under construction"
 
   judge-reject:
     needs: analyze_result

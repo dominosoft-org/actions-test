@@ -48,14 +48,14 @@ jobs:
 
   back:
     needs: changes
-    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.back == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "do backend-any"
 
   back_common:
     needs: changes
-    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.back_common == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_common == 'true' }}
     uses: ./.github/workflows/1_back_common.yaml
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
@@ -63,24 +63,24 @@ jobs:
 
   back_fakes:
     needs: changes
-    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.back_fakes == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_fakes == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "do backend-fakes-any"
 
   back_csproj:
     needs: changes
-    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.back_csproj == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_csproj == 'true' }}
     uses: ./.github/workflows/1_back_csproj.yaml
 
   front:
     needs: changes
-    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.front == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.front == 'true' }}
     uses: ./.github/workflows/1_front.yaml
 
   front_pnpm:
     needs: changes
-    if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.front_pnpm == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.front_pnpm == 'true' }}
     uses: ./.github/workflows/1_front_pnpm.yaml
 
   create_comment:
@@ -103,7 +103,7 @@ jobs:
           echo "comment=$(echo ${merged_comment})" > "$GITHUB_OUTPUT"
 
   output_comment:
-    if: ${{ always() && github.event_name == 'pull_request' }}
+    if: ${{ always() && github.event_name == 'pull_request' && needs.create_comment.outputs.comment != '' }}
     needs: create_comment
     uses: ./.github/workflows/2_post_comment.yaml
     with:

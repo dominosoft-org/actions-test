@@ -1,15 +1,15 @@
-name: Frontend Publish
+name: 2_front_publish
 
 on:
-  workflow_dispatch:
-  pull_request:
-    branches: ["main"]
-    types: [closed]
-    paths:
-      - "frontend/**"
+  workflow_call:
+    secrets:
+      REPO_ACCOUNT:
+        required: true
+      REPO_ACCESS_TOKEN:
+        required: true
 
 jobs:
-  get-target-dir-list:
+  collect:
     runs-on: ubuntu-latest
     outputs:
       dir_list: ${{ steps.dir_list.outputs.list }}
@@ -17,12 +17,13 @@ jobs:
       run:
         working-directory: ./frontend
     steps:
-      - name: Checkout
+      - name: Checkout🛎️
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - id: dir_list
+      - name: List Target Directories
+        id: dir_list
         run: |
           # ブランチのdiffファイル名を取得
           changed_files=$(git diff --name-only ${{ github.ref_name }}^ ${{ github.ref_name }})
@@ -30,12 +31,15 @@ jobs:
           path_list=[`echo "$changed_files" | grep -E "^frontend/.*/?$" | cut -d "/" -f2 | sort -u | sed "s/\$/\",/"  | sed "s/^/\ \ \"/"`]
           echo list=$path_list >> $GITHUB_OUTPUT
 
-  launch-publish:
-    needs: get-target-dir-list
-    if: needs.get-target-dir-list.outputs.dir_list != '[]'
+  publish:
+    needs: collect
+    if: needs.collect.outputs.dir_list != '[]'
     strategy:
       matrix:
-        dir: ${{ fromJson(needs.get-target-dir-list.outputs.dir_list) }}
-    uses: ./.github/workflows/npm-publish.yaml
+        dir: ${{ fromJson(needs.collect.outputs.dir_list) }}
+    uses: ./.github/workflows/2_npm_publish.yaml
     with:
       frontend_dir_name: ${{ matrix.dir }}
+    secrets:
+      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
+      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}

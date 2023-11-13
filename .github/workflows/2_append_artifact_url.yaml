@@ -55,7 +55,7 @@ jobs:
         with:
           issue-number: ${{ env.PR_NUMBER }}
           comment-author: "github-actions[bot]"
-          body-includes: "Summary Table"
+          body-includes: "🙏Code Summary"
           direction: last
 
       - name: Update Comment
@@ -73,9 +73,9 @@ jobs:
             You can download the semgrep sarif file from the link below.
             Please note that file only stay for around 90 days!
 
-            | Name     | Link                    |
-            | -------- | ----------------------- |
-            | Commit   | ${{ env.HEAD_SHA }}     |
-            | Sarif    | ${{ env.ARTIFACT_URL }} |
+            | Name        | Link                    |
+            | ----------- | ----------------------- |
+            | Commit      | ${{ env.HEAD_SHA }}     |
+            | Artifact    | [${{ env.ARTIFACT_ID }}](${{ env.ARTIFACT_URL }}) |
 
             [badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge

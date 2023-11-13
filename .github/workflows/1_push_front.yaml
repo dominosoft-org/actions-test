@@ -1,0 +1,18 @@
+name: 1_push_front
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      REPO_ACCOUNT:
+        required: true
+      REPO_ACCESS_TOKEN:
+        required: true
+
+jobs:
+  front_publish:
+    name: Frontend Publish🎁
+    uses: ./.github/workflows/2_front_publish.yaml
+    secrets:
+      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
+      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}

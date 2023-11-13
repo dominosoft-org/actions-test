@@ -61,6 +61,8 @@ jobs:
       - name: Build
         run: pnpm run build
       - name: Publish
-        run: pnpm publish
+        run: |
+          cp .npmrc.sample .npmrc
+          pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}

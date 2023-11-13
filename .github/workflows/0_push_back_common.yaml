@@ -1,0 +1,15 @@
+name: 0_push_back_common
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "backend/NeuroFramework.Common/**"
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "do 0_push_back_common"

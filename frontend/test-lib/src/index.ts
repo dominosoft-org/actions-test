@@ -17,5 +17,3 @@ const createLogger = (
 };
 
 export { createLogger, type Logger };
-
-// test用コメント

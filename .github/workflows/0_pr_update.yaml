@@ -103,7 +103,7 @@ jobs:
           echo "comment=$(echo ${merged_comment})" > "$GITHUB_OUTPUT"
 
   output_comment:
-    if: ${{ always() && github.event_name == 'pull_request' }}
+    if: ${{ always() && github.event_name == 'pull_request' && needs.create_comment.outputs.comment != '' }}
     needs: create_comment
     uses: ./.github/workflows/2_post_comment.yaml
     with:

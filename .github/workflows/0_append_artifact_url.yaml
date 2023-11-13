@@ -59,6 +59,7 @@ jobs:
           direction: last
 
       - name: Update Comment
+        if: ${{ env.ARTIFACT_ID != '' }}
         env:
           ARTIFACT_URL: "${{ github.server_url }}/${{ github.repository }}/suites/${{ env.SUITE_ID }}/artifacts/${{ env.ARTIFACT_ID }}"
           HEAD_SHA: "${{ env.HEAD_SHA }}"

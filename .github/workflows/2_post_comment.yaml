@@ -21,6 +21,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const env = process.env;
             const body = `## ${env.title}\n\n${env.comment}`;
             github.rest.issues.createComment({
               issue_number: context.issue.number,

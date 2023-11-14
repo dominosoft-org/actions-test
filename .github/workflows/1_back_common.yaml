@@ -15,7 +15,7 @@ on:
 jobs:
   backend_semgrep:
     name: Backend Semgrep
-    uses: ./.github/workflows/2_backend_semgrep.yaml
+    uses: ./.github/workflows/2_back_semgrep.yaml
 
   code_analysis:
     name: Code Analysis

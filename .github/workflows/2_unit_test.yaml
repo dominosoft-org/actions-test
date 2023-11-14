@@ -62,9 +62,10 @@ jobs:
       - name: Create Comment
         if: ${{ !cancelled() }}
         id: create_comment
+        shell: bash
         run: |
           comment="### Backend Unit Test\n\n"
-          comment="Check The Unit Test Report: **${{ steps.test_report.outputs.runHtmlUrl }}**\n\n"
+          comment+="Check The Unit Test Report: **${{ steps.test_report.outputs.runHtmlUrl }}**\n\n"
           echo "comment=${comment}" > "$GITHUB_OUTPUT"
 
       - name: Upload Coverage Report

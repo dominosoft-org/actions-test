@@ -26,7 +26,7 @@ jobs:
       comment: ${{ steps.comment.outputs.comment }}
     steps:
       - name: Generate Findings Table
-        if: ${{ inputs.length > 0 }}
+        if: ${{ inputs.findings != '' }}
         uses: buildingcash/json-to-markdown-table-action@v1
         id: findings_table
         with:
@@ -47,7 +47,7 @@ jobs:
           if [ ${{ inputs.length }} -eq 0 ]; then
             comment+="✅Congratulations! There is no findings\n\n"
           else
-          comment+="#### Summary Table\n\n${{ steps.findings_table.outputs.table }}\n\n"
-          comment+="#### Findings\n\n${{ steps.message_table.outputs.table }}\n\n"
+            comment+="#### Summary Table\n\n${{ steps.findings_table.outputs.table }}\n\n"
+            comment+="#### Findings\n\n${{ steps.message_table.outputs.table }}\n\n"
           fi
           echo "comment=${comment}" > "$GITHUB_OUTPUT"

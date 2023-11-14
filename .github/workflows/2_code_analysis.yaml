@@ -8,10 +8,8 @@ on:
       REPO_ACCESS_TOKEN:
         required: true
     outputs:
-      result:
-        value: ${{ jobs.code-analysis.outputs.result }}
-      log:
-        value: ${{ jobs.code-analysis.outputs.log }}
+      comment:
+        value: ${{ jobs.code-analysis.outputs.comment }}
 env:
   GITHUB_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
   GITHUB_PKG_NFW_AUTH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
@@ -20,7 +18,7 @@ jobs:
   code-analysis:
     runs-on: ubuntu-latest
     outputs:
-      result: ${{ steps.log.outputs.result }}
+      comment: ${{ steps.log.outputs.comment }}
       log: ${{ steps.log.outcome}}
 
     steps:
@@ -53,23 +51,9 @@ jobs:
           sed -i s@'src/'@@g CodeAnalysis.log
           log=$(cat CodeAnalysis.log | sed -n '/FAILED/,/Error/p')
           if [[ $log == '' ]]; then
-            echo "result=Code Analysis passed" >> "$GITHUB_OUTPUT"
+            echo "comment=✅Code Analysis passed" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           echo $log
           log="${log//$'\n'/\\n}"
-          echo "result=$(echo $log)" >> "$GITHUB_OUTPUT"
-
-  #postcomment:
-  #  uses: ./.github/workflows/comment_bot.yaml
-  #  # code_analysisが失敗していても、`Check Logs`を実行した場合はpostcommentを行う
-  #  if: needs.code_analysis.outputs.log == 'success'
-  #  needs: code_analysis
-  #  with:
-  #    action_name: Code Analysis
-  #    comment: ${{ needs.code_analysis.outputs.result }}
-
-  #auto_reject:
-  #  uses: ./.github/workflows/auto-reject.yaml
-  #  needs: code_analysis
-  #  if: failure()
+          echo "comment=$(echo $log)" >> "$GITHUB_OUTPUT"

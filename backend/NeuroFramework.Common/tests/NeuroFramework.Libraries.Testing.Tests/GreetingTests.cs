@@ -9,6 +9,7 @@ public class GreetingTests {
   }
   [TestMethod]
   public void ByeTest() {
+    // backend test
     var greeting = new Greeting("John");
     Assert.AreEqual("Bye John", greeting.Bye());
   }

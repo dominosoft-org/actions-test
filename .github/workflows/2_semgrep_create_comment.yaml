@@ -46,7 +46,6 @@ jobs:
         with:
           script: |
             result="### 📄${{ inputs.location }} Semgrep Analysis\n\n"
-            #if [ ${{ steps.findings_table.outputs.table }} == '' ]; then
             if [ ${{ inputs.length > 0 }} == '' ]; then
               result+="✅Congratulations! There is no findings\n\n"
             else

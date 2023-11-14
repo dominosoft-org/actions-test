@@ -47,7 +47,7 @@ jobs:
           vstest.console.exe /platform:x64 /inIsolation /Blame /Logger:trx /Enablecodecoverage .\tests\NeuroFramework.*\bin\Release\net7.0\**.Tests.dll /collect:"Code Coverage;Format=Cobertura"
 
       - name: Test Report
-        if: !cancelled()
+        if: ${{ !cancelled() }}
         id: test_report
         uses: phoenix-actions/test-reporting@v12
         with:
@@ -60,7 +60,7 @@ jobs:
           list-tests: "all"
 
       - name: Create Comment
-        if: !cancelled()
+        if: ${{ !cancelled() }}
         id: create_comment
         run: |
           comment="### Backend Unit Test\n\n"
@@ -69,7 +69,7 @@ jobs:
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v3
-        if: !cancelled()
+        if: ${{ !cancelled() }}
         with:
           name: code coverage report
           path: .\backend\NeuroFramework.Common\TestResults\**\*.cobertura.xml
@@ -101,13 +101,13 @@ jobs:
 
       - name: Upload Coverage Result Report
         uses: actions/upload-artifact@v3
-        if: always()
+        if: ${{ !cancelled() }}
         with:
           name: code coverage markdown report
           path: code-coverage-results.md
 
       - name: Create Comment
-        if: !cancelled()
+        if: ${{ !cancelled() }}
         id: create_comment
         run: |
           comment="$(cat code-coverage-results.md)\n\n"

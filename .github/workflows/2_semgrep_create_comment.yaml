@@ -44,10 +44,11 @@ jobs:
         id: comment
         run: |
           comment="### 📄${{ inputs.location }} Semgrep Analysis\n\n"
-          if [ ${{ inputs.length }} -eq 0 ]; then
+          #if [ ${{ steps.findings_table.outputs.table }} == '' ]; then
+          if [ ${{ inputs.length > 0 }} == '' ]; then
             comment+="✅Congratulations! There is no findings\n\n"
           else
             comment+="#### Summary Table\n\n${{ steps.findings_table.outputs.table }}\n\n"
             comment+="#### Findings\n\n${{ steps.message_table.outputs.table }}\n\n"
           fi
-          echo "comment=${comment}" > "$GITHUB_OUTPUT"
+          echo "comment=$(echo $comment)" > "$GITHUB_OUTPUT"

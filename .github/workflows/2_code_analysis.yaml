@@ -18,8 +18,7 @@ jobs:
   code-analysis:
     runs-on: ubuntu-latest
     outputs:
-      comment: ${{ steps.log.outputs.comment }}
-      log: ${{ steps.log.outcome}}
+      comment: ${{ steps.comment.outputs.result }}
 
     steps:
       - name: Checkout🛎️
@@ -42,18 +41,21 @@ jobs:
           dotnet sln Common.sln remove tests/**/*.csproj
           dotnet restore --configfile "github-actions-nuget.config"
           dotnet build -m --no-restore -p:Configuration=Release -p:EnforceCodeStyleInBuild=true -p:TreatWarningsAsErrors=true -p:IsGithubActions=true > CodeAnalysis.log
-      - name: Check Logs
-        id: log
+
+      - name: Create Comment
+        id: comment
         if: always()
-        run: |
-          cd ./backend/NeuroFramework.Common/
-          sed -i s@'/home/runner/work/neuro-framework-common/neuro-framework-common/backend/NeuroFramework.Common/'@@g CodeAnalysis.log
-          sed -i s@'src/'@@g CodeAnalysis.log
-          log=$(cat CodeAnalysis.log | sed -n '/FAILED/,/Error/p')
-          if [[ $log == '' ]]; then
-            echo "comment=✅Code Analysis passed" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo $log
-          log="${log//$'\n'/\\n}"
-          echo "comment=$(echo $log)" >> "$GITHUB_OUTPUT"
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let log = fs.readFileAsync('./backend/NeuroFramework.Common/CodeAnalysis.log');
+            log = log.replace("/home/runner/work/neuro-framework-common/neuro-framework-common/backend/NeuroFramework.Common/", "");
+            log = log.replace("src/", "");
+            log = log.match(/FAILED[\s\S]*Error/g);
+            if (log) {
+              log = log.replace(/\n/g, '\\n');
+            }else {
+              log = "✅Code Analysis passed";
+            }
+            return "### Code Analysis\\n\\n" + log + "\\n\\n";

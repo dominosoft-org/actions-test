@@ -109,4 +109,4 @@ jobs:
     uses: ./.github/workflows/2_post_comment.yaml
     with:
       title: "🙏Code Summary"
-      comment: ${{ needs.create_comment.outputs.comment }}
+      comment: "${{ needs.create_comment.outputs.comment }}"

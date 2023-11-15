@@ -91,18 +91,17 @@ jobs:
       comment: ${{ steps.comment.outputs.result }}
     env:
       job_comments: |
-        (
-          "${{ needs.back_csproj.outputs.comment }}"
-          "${{ needs.back_common.outputs.comment }}"
-          "${{ needs.front.outputs.comment }}"
-          "${{ needs.front_pnpm.outputs.comment }}"
-        )
+        [
+          '${{ needs.back_csproj.outputs.comment }}',
+          '${{ needs.back_common.outputs.comment }}',
+          '${{ needs.front.outputs.comment }}',
+          '${{ needs.front_pnpm.outputs.comment }}'
+        ]
     steps:
       - id: comment
         uses: actions/github-script@v7
         with:
           script: |
-            console.log(process.env);
             console.log(process.env.job_comments);
             return process.env.job_comments.filter(e => e.length > 0).join('\n\n');
 

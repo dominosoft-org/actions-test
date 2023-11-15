@@ -40,7 +40,7 @@ jobs:
         run: |
           cd ./backend/NeuroFramework.Common/
           dotnet sln Common.sln remove tests/**/*.csproj
-          dotnet restore -p:WarningsNotAsErrors=NU1603 -p:NoWarn=NU1603 --configfile "github-actions-nuget.config"
+          dotnet restore --configfile "github-actions-nuget.config"
           dotnet build -m --no-restore -p:Configuration=Release -p:EnforceCodeStyleInBuild=true -p:TreatWarningsAsErrors=true -p:IsGithubActions=true > CodeAnalysis.log
       - name: Check Logs
         id: log

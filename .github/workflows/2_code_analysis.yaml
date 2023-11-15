@@ -48,8 +48,8 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const fs = require('fs');
-            let log = fs.readFileAsync('./backend/NeuroFramework.Common/CodeAnalysis.log');
+            const { readFileSync } = require('fs');
+            let log = readFileSync('./backend/NeuroFramework.Common/CodeAnalysis.log');
             log = log.replace("/home/runner/work/neuro-framework-common/neuro-framework-common/backend/NeuroFramework.Common/", "");
             log = log.replace("src/", "");
             log = log.match(/FAILED[\s\S]*Error/g);

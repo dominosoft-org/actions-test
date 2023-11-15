@@ -64,6 +64,7 @@ jobs:
         id: create_comment
         uses: actions/github-script@v7
         with:
+          result-encoding: string
           script: |
             let comment="### Backend Unit Test\n\n";
             comment += "Check The Unit Test Report: **${{ steps.test_report.outputs.runHtmlUrl }}**\n\n";
@@ -113,6 +114,7 @@ jobs:
         id: create_comment
         uses: actions/github-script@v7
         with:
+          result-encoding: string
           script: |
             const { readFileSync } = require('fs');
             return readFileSync('./code-coverage-results.md') + "\n\n";
@@ -128,6 +130,7 @@ jobs:
         id: merge_comments
         uses: actions/github-script@v7
         with:
+          result-encoding: string
           script: |
             const job_comments = [
               `${{ needs.unit_test.outputs.comment }}`,

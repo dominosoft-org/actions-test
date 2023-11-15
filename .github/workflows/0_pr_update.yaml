@@ -93,6 +93,7 @@ jobs:
       - id: comment
         uses: actions/github-script@v7
         with:
+          result-encoding: string
           script: |
             const job_comments = [
               `${{ needs.back_csproj.outputs.comment }}`,

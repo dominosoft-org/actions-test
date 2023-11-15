@@ -1,0 +1,52 @@
+name: 2_nuget_publish_common
+
+on:
+  workflow_call:
+    secrets:
+      REPO_ACCOUNT:
+        required: true
+      REPO_ACCESS_TOKEN:
+        required: true
+
+env:
+  GITHUB_ACCOUNT: ${{  secrets.REPO_ACCOUNT  }}
+  GITHUB_PKG_NFW_AUTH_TOKEN: ${{  secrets.REPO_ACCESS_TOKEN  }}
+
+jobs:
+  version_increment:
+    uses: ./.github/workflows/2_version_increment.yaml
+    with:
+      version_fragment: "alpha"
+
+  publish:
+    runs-on: windows-latest
+    needs: version_increment
+
+    steps:
+      - name: Checkout🛎️
+        uses: actions/checkout@v4
+
+      - name: Setup Nuget cache⚡
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Build Solution
+        run: |
+          cd .\backend\NeuroFramework.Common
+          dotnet restore -p:WarningsNotAsErrors=NU1603 -p:NoWarn=NU1603 --configfile "github-actions-nuget.config"
+          msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet -p:Version=${{ needs.version_increment.outputs.next }}
+
+      - name: Publish to GitHub Packages
+        uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
+        with:
+          nupkg-path: '.\backend\NeuroFramework.Common\src\**\bin\Release\*.nupkg'
+          repo-owner: ${{ secrets.REPO_ACCOUNT }}
+          gh-user: ${{ secrets.REPO_ACCOUNT }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}

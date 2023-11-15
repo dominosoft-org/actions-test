@@ -7,7 +7,7 @@
     <AnalysisMode>all</AnalysisMode>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/elon-max/neuro-framework-common/</RepositoryUrl>
+    <RepositoryUrl>https://github.com/dominosoft-org/actions-test/</RepositoryUrl>
     <Description>単体テストで用いるためのFakesアセンブリの集合。System｡*系。</Description>
   </PropertyGroup>
 

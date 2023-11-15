@@ -91,12 +91,12 @@ jobs:
       comment: ${{ steps.comment.outputs.result }}
     env:
       job_comments: |
-        [
+        "[
           '${{ needs.back_csproj.outputs.comment }}',
           '${{ needs.back_common.outputs.comment }}',
           '${{ needs.front.outputs.comment }}',
           '${{ needs.front_pnpm.outputs.comment }}'
-        ]
+        ]"
     steps:
       - id: comment
         uses: actions/github-script@v7

@@ -88,19 +88,20 @@ jobs:
     needs: [back, back_common, back_fakes, back_csproj, front, front_pnpm]
     runs-on: ubuntu-latest
     outputs:
-      comment: ${{ steps.comment.outputs.comment }}
+      comment: ${{ steps.comment.outputs.result }}
     steps:
-      - name: Create comment
-        id: comment
-        run: |
-          # 各ジョブからのコメントを取得して配列に追加
-          comments=('${{ needs.back_csproj.outputs.comment }}' '${{ needs.back_common.outputs.comment }}' '${{ needs.front.outputs.comment }}' '${{ needs.front_pnpm.outputs.comment }}')
-          for i in ${!comments[@]}; do
-            if [ "${comments[$i]}" != "" ]; then
-              merged_comment+="${comments[$i]}\n\n"
-            fi
-          done
-          echo "comment=$(echo ${merged_comment})" > "$GITHUB_OUTPUT"
+      - id: comment
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const job_comments = [
+              `${{ needs.back_csproj.outputs.comment }}`,
+              `${{ needs.back_common.outputs.comment }}`,
+              `${{ needs.front.outputs.comment }}`,
+              `${{ needs.front_pnpm.outputs.comment }}`
+            ];
+            return job_comments.filter(e => e.length > 0).join('\n\n');
 
   output_comment:
     if: ${{ always() && github.event_name == 'pull_request' && needs.create_comment.outputs.comment != '' }}
@@ -108,4 +109,4 @@ jobs:
     uses: ./.github/workflows/2_post_comment.yaml
     with:
       title: "🙏Code Summary"
-      comment: ${{ needs.create_comment.outputs.comment }}
+      comment: "${{ needs.create_comment.outputs.comment }}"

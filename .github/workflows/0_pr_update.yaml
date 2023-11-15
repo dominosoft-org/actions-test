@@ -89,16 +89,19 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       comment: ${{ steps.comment.outputs.result }}
-    env:
-      job_comments: '["${{ needs.back_csproj.outputs.comment }}", "${{ needs.back_common.outputs.comment }}", "${{ needs.front.outputs.comment }}", "${{ needs.front_pnpm.outputs.comment }}"]'
     steps:
       - id: comment
         uses: actions/github-script@v7
         with:
           script: |
-            const job_comments = JSON.parse(process.env.job_comments);
+            const job_comments = [
+              `${{ needs.back_csproj.outputs.comment }}`,
+              `${{ needs.back_common.outputs.comment }}`
+              `${{ needs.front.outputs.comment }}`
+              `${{ needs.front_pnpm.outputs.comment }}`
+            ]
             console.log(job_comments);
-            return process.env.job_comments.filter(e => e.length > 0).join('\n\n');
+            return job_comments.filter(e => e.length > 0).join('\n\n');
 
   output_comment:
     if: ${{ always() && github.event_name == 'pull_request' && needs.create_comment.outputs.comment != '' }}

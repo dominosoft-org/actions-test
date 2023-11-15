@@ -1,4 +1,4 @@
-name: 2_backend_semgrep
+name: 2_back_semgrep
 
 on:
   workflow_call:

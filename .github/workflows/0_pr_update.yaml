@@ -96,8 +96,8 @@ jobs:
           script: |
             const job_comments = [
               `${{ needs.back_csproj.outputs.comment }}`,
-              `${{ needs.back_common.outputs.comment }}`
-              `${{ needs.front.outputs.comment }}`
+              `${{ needs.back_common.outputs.comment }}`,
+              `${{ needs.front.outputs.comment }}`,
               `${{ needs.front_pnpm.outputs.comment }}`
             ]
             console.log(job_comments);

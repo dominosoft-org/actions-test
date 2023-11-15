@@ -45,8 +45,8 @@ jobs:
           result-encoding: string
           script: |
             const comments = [
-              ${{ needs.back_semgrep.outputs.comment }},
-              ${{ needs.code_analysis.outputs.comment }},
-              ${{ needs.unit_test.outputs.comment }}
+              `${{ needs.back_semgrep.outputs.comment }}`,
+              `${{ needs.code_analysis.outputs.comment }}`,
+              `${{ needs.unit_test.outputs.comment }}`
             ]
             return comments.filter(e => e.length > 0).join('\n\n');

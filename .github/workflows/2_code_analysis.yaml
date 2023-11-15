@@ -50,13 +50,13 @@ jobs:
           result-encoding: string
           script: |
             const { readFileSync } = require('fs');
-            let log = readFileSync('./backend/NeuroFramework.Common/CodeAnalysis.log');
-            log = log.replace("/home/runner/work/neuro-framework-common/neuro-framework-common/backend/NeuroFramework.Common/", "");
-            log = log.replace("src/", "");
-            log = log.match(/FAILED[\s\S]*Error/g);
-            if (log) {
-              log = log.replace(/\n/g, '\\n');
+            let data = readFileSync('./backend/NeuroFramework.Common/CodeAnalysis.log');
+            data = data.replace("/home/runner/work/neuro-framework-common/neuro-framework-common/backend/NeuroFramework.Common/", "");
+            data = data.replace("src/", "");
+            data = data.match(/FAILED[\s\S]*Error/g);
+            if (data) {
+              data = data.replace(/\n/g, '\\n');
             }else {
-              log = "✅Code Analysis passed";
+              data = "✅Code Analysis passed";
             }
-            return "### Code Analysis\\n\\n" + log + "\\n\\n";
+            return "### Code Analysis\\n\\n" + data + "\\n\\n";

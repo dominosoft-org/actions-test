@@ -51,6 +51,7 @@ jobs:
           script: |
             const { readFileSync } = require('fs');
             let data = readFileSync('./backend/NeuroFramework.Common/CodeAnalysis.log');
+            console.log(data);
             data = data.replace("/home/runner/work/neuro-framework-common/neuro-framework-common/backend/NeuroFramework.Common/", "");
             data = data.replace("src/", "");
             data = data.match(/FAILED[\s\S]*Error/g);

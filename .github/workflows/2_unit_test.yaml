@@ -1,4 +1,4 @@
-name: unit test
+name: 2_unit_test
 
 on:
   workflow_call:
@@ -7,6 +7,9 @@ on:
         required: true
       REPO_ACCESS_TOKEN:
         required: true
+    outputs:
+      comment:
+        value: ${{  jobs.merge_comment.outputs.comment  }}
 
 env:
   GITHUB_ACCOUNT: ${{  secrets.REPO_ACCOUNT  }}
@@ -16,10 +19,19 @@ jobs:
   unit_test:
     runs-on: windows-latest
     outputs:
-      unit-test-report-url: ${{ steps.test-report.outputs.runHtmlUrl }}
+      comment: ${{ steps.create_comment.outputs.comment }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout🛎️
+        uses: actions/checkout@v4
+
+      - name: Setup Nuget cache⚡
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v1
@@ -35,8 +47,8 @@ jobs:
           vstest.console.exe /platform:x64 /inIsolation /Blame /Logger:trx /Enablecodecoverage .\tests\NeuroFramework.*\bin\Release\net7.0\**.Tests.dll /collect:"Code Coverage;Format=Cobertura"
 
       - name: Test Report
-        if: always()
-        id: test-report
+        if: ${{ !cancelled() }}
+        id: test_report
         uses: phoenix-actions/test-reporting@v12
         with:
           name: Unit Tests Report
@@ -47,16 +59,18 @@ jobs:
           list-suites: "all"
           list-tests: "all"
 
-      #- name: Comment PR
-      #  if: always()
-      #  uses: thollander/actions-comment-pull-request@v2
-      #  with:
-      #    message: |
-      #      Check The Unit Test Report: **${{ steps.test-report.outputs.runHtmlUrl }}**
+      - name: Create Comment
+        if: ${{ !cancelled() }}
+        id: create_comment
+        shell: bash
+        run: |
+          comment="### Backend Unit Test\n\n"
+          comment+="Check The Unit Test Report: **${{ steps.test_report.outputs.runHtmlUrl }}**\n\n"
+          echo "comment=${comment}" > "$GITHUB_OUTPUT"
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v3
-        if: always()
+        if: ${{ !cancelled() }}
         with:
           name: code coverage report
           path: .\backend\NeuroFramework.Common\TestResults\**\*.cobertura.xml
@@ -64,8 +78,9 @@ jobs:
   code_coverage_report:
     needs: unit_test
     runs-on: ubuntu-latest
-    name: code coverage report
     if: ${{ !cancelled() }}
+    outputs:
+      comment: ${{ steps.create_comment.outputs.comment }}
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -87,18 +102,32 @@ jobs:
 
       - name: Upload Coverage Result Report
         uses: actions/upload-artifact@v3
-        if: always()
+        if: ${{ !cancelled() }}
         with:
           name: code coverage markdown report
           path: code-coverage-results.md
 
-      #- name: Add Coverage PR Comment
-      #  uses: marocchino/sticky-pull-request-comment@v2
-      #  with:
-      #    recreate: true
-      #    path: code-coverage-results.md
+      - name: Create Comment
+        if: ${{ !cancelled() }}
+        id: create_comment
+        run: |
+          comment="$(cat code-coverage-results.md)\n\n"
+          echo "comment=${comment}" > "$GITHUB_OUTPUT"
 
-#  auto_reject:
-#    needs: unit_test
-#    uses: ./.github/workflows/auto-reject.yaml
-#    if: failure()
+  merge_comment:
+    needs: [ unit_test, code_coverage_report ]
+    runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
+    outputs:
+      comment: ${{ steps.merge_comments.outputs.comment }}
+    steps:
+      - name: Merge Comments
+        id: merge_comments
+        run: |
+          comments=('${{ needs.unit_test.outputs.comment }}' '${{ needs.code_coverage_report.outputs.comment }}')
+          for i in ${!comments[@]}; do
+            if [ "${comments[$i]}" != "" ]; then
+              merged_comment+="${comments[$i]}\n\n"
+            fi
+          done
+          echo "comment=$(echo ${merged_comment})" > "$GITHUB_OUTPUT"

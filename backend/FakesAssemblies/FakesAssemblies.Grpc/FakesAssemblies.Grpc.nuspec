@@ -14,7 +14,7 @@
     <!-- copyright: Copyright -->
     <copyright/>
     <!-- Repository: RepositoryUrl -->
-    <repository type="git" url="https://github.com/elon-max/neuro-framework-common/"/>
+    <repository type="git" url="https://github.com/dominosoft-org/actions-test/"/>
     <dependencies>
       <group targetFramework="net7.0">
         <dependency id="Microsoft.QualityTools.Testing.Fakes" version="16.11.230815" />

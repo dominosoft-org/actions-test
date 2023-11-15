@@ -10,21 +10,42 @@ on:
         required: true
     outputs:
       comment:
-        value: "under construction"
+        value: ${{ jobs.create_comment.outputs.comment }}
 
 jobs:
-  backend-semgrep:
+  backend_semgrep:
     name: Backend Semgrep
-    uses: ./.github/workflows/backend-semgrep.yaml
-  code-analysis:
+    uses: ./.github/workflows/2_back_semgrep.yaml
+
+  code_analysis:
     name: Code Analysis
-    uses: ./.github/workflows/code-analysis.yaml
+    uses: ./.github/workflows/2_code_analysis.yaml
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
       REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
-  unit-test:
+
+  unit_test:
     name: Unit Test
-    uses: ./.github/workflows/unit-test.yaml
+    uses: ./.github/workflows/2_unit_test.yaml
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
       REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+
+  create_comment:
+    if: always()
+    needs: [backend_semgrep, code_analysis, unit_test]
+    runs-on: ubuntu-latest
+    outputs:
+      comment: ${{ steps.comment.outputs.comment }}
+    steps:
+      - name: Create comment
+        id: comment
+        run: |
+          # 各ジョブからのコメントを取得して配列に追加
+          comments=('${{ needs.backend_semgrep.outputs.comment }}' '${{ needs.code_analysis.outputs.comment }}' '${{ needs.unit_test.outputs.comment }}')
+          for i in ${!comments[@]}; do
+            if [ "${comments[$i]}" != "" ]; then
+              merged_comment+="${comments[$i]}\n\n"
+            fi
+          done
+          echo "comment=$(echo ${merged_comment})" > "$GITHUB_OUTPUT"

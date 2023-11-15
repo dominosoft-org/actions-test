@@ -1,4 +1,4 @@
-name: backend semgrep
+name: 2_backend_semgrep
 
 on:
   workflow_call:
@@ -21,7 +21,7 @@ jobs:
           echo "args=$(echo $semgrep_command_args)" >> "$GITHUB_OUTPUT"
       - name: Scan🌈
         id: scan
-        uses: docker://returntocorp/semgrep:1.48.0
+        uses: docker://returntocorp/semgrep
         with:
           entrypoint: "semgrep"
           args: ${{ steps.create-command.outputs.args }}

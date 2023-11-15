@@ -100,8 +100,7 @@ jobs:
               `${{ needs.back_common.outputs.comment }}`,
               `${{ needs.front.outputs.comment }}`,
               `${{ needs.front_pnpm.outputs.comment }}`
-            ]
-            console.log(job_comments);
+            ];
             return job_comments.filter(e => e.length > 0).join('\n\n');
 
   output_comment:

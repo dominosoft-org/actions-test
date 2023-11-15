@@ -44,7 +44,7 @@ jobs:
           cd .\backend\NeuroFramework.Common
           dotnet restore --configfile "github-actions-nuget.config"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet
-          vstest.console.exe -platform:x64 -inIsolation -Blame -Logger:trx -Enablecodecoverage .\tests\NeuroFramework.*\bin\Release\net7.0\**.Tests.dll -collect:"Code Coverage;Format=Cobertura"
+          vstest.console.exe /Platform:x64 /InIsolation /Blame /Logger:trx /Enablecodecoverage "".\tests\NeuroFramework.*\bin\Release\net7.0\**.Tests.dll" /Collect:"Code Coverage;Format=Cobertura"
 
       - name: Test Report
         if: ${{ !cancelled() }}

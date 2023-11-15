@@ -40,7 +40,7 @@ jobs:
       - name: Build Solution
         run: |
           cd .\backend\NeuroFramework.Common
-          dotnet restore -p:WarningsNotAsErrors=NU1603 -p:NoWarn=NU1603 --configfile "github-actions-nuget.config"
+          dotnet restore --configfile "github-actions-nuget.config"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet -p:Version=${{ needs.version_increment.outputs.next }}
 
       - name: Publish to GitHub Packages

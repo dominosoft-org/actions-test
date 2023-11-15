@@ -53,7 +53,8 @@ jobs:
       - name: Build Fakes Assemblies
         run: |
           cd .\backend\FakesAssemblies
-          msbuild /m /p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet FakesAssemblies.sln
+          dotnet restore
+          msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet FakesAssemblies.sln
 
       - name: Publish Fakes Assemblies NuGet
         uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1

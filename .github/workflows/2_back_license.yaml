@@ -34,14 +34,15 @@ jobs:
         id: create_comment
         run: |
           cd ./backend/NeuroFramework.Common
+          result="### 📄Backend License Check\n\n"
           lines=$(cat licenses4.json | jq '.[].PackageName')
           if [ -z "$lines" ]; then
             # すべてのライセンスがOKの場合
-            echo "result=$(echo 'All OK.')" >> "$GITHUB_OUTPUT"
+            result+='✅All OK.'
           else
             # ライセンスNGがある場合
             log=$(echo "${lines}" | sed -n '/,/,$p')
-            log="${log//$'\n'/\\n}"
-            log+="\\n\\nIs it safe to use these libraries? Reviewers must judge that."
-            echo "result=$(echo $log)" >> "$GITHUB_OUTPUT"
+            result+="${log//$'\n'/\\n}"
+            result+="\\n\\nIs it safe to use these libraries? Reviewers must judge that."
           fi
+          echo "result=$(echo $result)" >> "$GITHUB_OUTPUT"

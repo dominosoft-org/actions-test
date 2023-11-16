@@ -26,10 +26,10 @@ jobs:
             const artifact = artifacts.data.artifacts.filter(artifact => artifact.expired === false)[0];
             if (artifact) {
               core.setOutput('artifact_id', artifact.id);
-              core.setOutput('artifact_url', artifact.archive_download_url); // artifact.urlかもしれない
+              const downloadUrl = "${{ github.server_url }}/${{ github.repository }}/suites/" + `${eventObj.check_suite_id}/artifacts/${artifact.id}`;
+              core.setOutput('artifact_url', downloadUrl);
             }
             // context.issue.numberはPRの番号
-            console.log(`issue_number: ${eventObj.pull_requests[0].number}`)
             core.setOutput('issue_number', eventObj.pull_requests[0].number);
             core.setOutput('head_sha', context.sha);
 
@@ -59,6 +59,6 @@ jobs:
             | Name        | Link                    |
             | ----------- | ----------------------- |
             | Commit      | ${{ steps.get_artifact.outputs.head_sha }}     |
-            | Artifact    | [${{ steps.get_artifact.outputs.articat_id }}](${{ steps.get_artifact.outputs.articat_url }}) |
+            | Artifact    | [${{ steps.get_artifact.outputs.artifact_id }}](${{ steps.get_artifact.outputs.artifact_url }}) |
 
             [badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge

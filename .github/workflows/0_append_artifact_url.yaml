@@ -30,8 +30,8 @@ jobs:
               repo: context.repo.repo,
               run_id: eventObj.id
             });
-            const artifacts = artifacts.data.artifacts.filter(artifact => artifact.expired === false);
-            if (!artifacts.length) {
+            const validArtifacts = artifacts.data.artifacts.filter(artifact => artifact.expired === false);
+            if (!validArtifacts.length) {
               // Artifactがない場合は何もしない。
               return;
             }
@@ -41,7 +41,7 @@ jobs:
             result += "Please note that file only stay for around 90 days!\n\n";
             result += "| Artifact ID | Link                    |\n";
             result += "| ----------- | ----------------------- |\n";
-            for (const artifact of artifacts.data.artifacts) {
+            for (const artifact of validArtifacts.data.artifacts) {
               const downloadUrl = "${{ github.server_url }}/${{ github.repository }}/suites/" + `${eventObj.check_suite_id}/artifacts/${artifact.id}`;
               result += `| ${artifact.id} | ${downloadUrl} |\n`;
             }

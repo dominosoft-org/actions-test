@@ -16,13 +16,11 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     outputs:
-      back: ${{ steps.filters.outputs.back }}
       back_common: ${{ steps.filters.outputs.back_common }}
       back_fakes: ${{ steps.filters.outputs.back_fakes }}
       back_csproj: ${{ steps.filters.outputs.back_csproj }}
       front: ${{ steps.filters.outputs.front }}
       front_pnpm: ${{ steps.filters.outputs.front_pnpm }}
-      docfx: ${{ steps.changes.outputs.docfx }}
     steps:
       - name: 💼 Checkout
         uses: actions/checkout@v4
@@ -31,27 +29,14 @@ jobs:
         id: filters
         with:
           filters: |
-            back:
-              - 'backend/**'
             back_common:
               - 'backend/NeuroFramework.Common/**'
-            back_fakes:
-              - 'backend/FakesAssemblies/**'
             back_csproj:
               - 'backend/NeuroFramework.Common/**/*.csproj'
             front:
               - 'frontend/**'
             front_pnpm:
               - 'frontend/**/pnpm-lock.yaml'
-            docfx:
-            - 'doc/docfx/**'
-
-  back:
-    needs: changes
-    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "do backend-any"
 
   back_common:
     needs: changes
@@ -60,13 +45,6 @@ jobs:
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
       REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
-
-  back_fakes:
-    needs: changes
-    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_fakes == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "do backend-fakes-any"
 
   back_csproj:
     needs: changes
@@ -85,7 +63,7 @@ jobs:
 
   create_comment:
     if: ${{ always() && github.event_name == 'pull_request' }}
-    needs: [back, back_common, back_fakes, back_csproj, front, front_pnpm]
+    needs: [back_common, back_csproj, front, front_pnpm]
     runs-on: ubuntu-latest
     outputs:
       comment: ${{ steps.create_comment.outputs.result }}

@@ -29,10 +29,8 @@ jobs:
               core.setOutput('artifact_url', artifact.archive_download_url); // artifact.urlかもしれない
             }
             // context.issue.numberはPRの番号
-            console.log(`issue_number: ${context.issue.number}`)
-            console.log(`issue: ${context.issue}`)
-            core.setOutput('issue_number', context.issue.number);
-            console.log(`head_sha: ${context.sha}`)
+            console.log(`issue_number: ${eventObj.pull_requests[0].number}`)
+            core.setOutput('issue_number', eventObj.pull_requests[0].number);
             core.setOutput('head_sha', context.sha);
 
       - name: "🔎 Find Comment"

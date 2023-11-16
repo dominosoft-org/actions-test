@@ -66,8 +66,8 @@ jobs:
         with:
           result-encoding: string
           script: |
-            let comment="### Backend Unit Test\n\n";
-            comment += "Check The Unit Test Report: **${{ steps.test_report.outputs.runHtmlUrl }}**\n\n";
+            let comment="### :microscope: Backend Unit Test\n\n";
+            comment += "**${{ steps.test_report.outputs.runHtmlUrl }}**\n\n";
             return comment;
 
       - name: ⬆️ Upload Artifact
@@ -134,7 +134,7 @@ jobs:
           result-encoding: string
           script: |
             const job_comments = [
-              `${{ needs.unit_test.outputs.comment }}`,
               `${{ needs.code_coverage_report.outputs.comment }}`,
+              `${{ needs.unit_test.outputs.comment }}`,
             ]
             return job_comments.filter(e => e.length > 0).join('\n\n');

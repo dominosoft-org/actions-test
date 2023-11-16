@@ -25,7 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5.プロセスの実装", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuroFramework.Libraries", "src\NeuroFramework.Libraries\NeuroFramework.Libraries.csproj", "{588868EA-E561-458F-BE0A-139974D2BF1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuroFramework.Libraries.Testing.Tests", "tests\NeuroFramework.Libraries.Testing.Tests\NeuroFramework.Libraries.Testing.Tests.csproj", "{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuroFramework.Libraries.Testing.Tests", "tests\NeuroFramework.Libraries.Testing.Tests\NeuroFramework.Libraries.Testing.Tests.csproj", "{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuroFramework.Common.Waves.Tests", "tests\NeuroFramework.Common.Waves.Tests\NeuroFramework.Common.Waves.Tests.csproj", "{3C54E6D1-9EA8-4228-B966-A13F1C7AC3FA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuroFramework.Common.Waves", "src\NeuroFramework.Common.Waves\NeuroFramework.Common.Waves.csproj", "{6BEAB59C-3B81-4755-A028-56F3CAA09F97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +45,14 @@ Global
 		{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C54E6D1-9EA8-4228-B966-A13F1C7AC3FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C54E6D1-9EA8-4228-B966-A13F1C7AC3FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C54E6D1-9EA8-4228-B966-A13F1C7AC3FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C54E6D1-9EA8-4228-B966-A13F1C7AC3FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BEAB59C-3B81-4755-A028-56F3CAA09F97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BEAB59C-3B81-4755-A028-56F3CAA09F97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BEAB59C-3B81-4755-A028-56F3CAA09F97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BEAB59C-3B81-4755-A028-56F3CAA09F97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,6 +61,8 @@ Global
 		{B020344D-7891-4F80-A759-DD244B375BF1} = {46A5648C-A0F1-4C10-9A14-ECF0FEA91849}
 		{588868EA-E561-458F-BE0A-139974D2BF1E} = {8B4DA53E-F4E3-42BA-850E-24BFFBE63118}
 		{425FE9EA-B327-4E48-9AF5-3DCAA498BA7D} = {F9B23F5A-6675-42CA-AB52-6E12A188ACD5}
+		{3C54E6D1-9EA8-4228-B966-A13F1C7AC3FA} = {F9B23F5A-6675-42CA-AB52-6E12A188ACD5}
+		{6BEAB59C-3B81-4755-A028-56F3CAA09F97} = {8B4DA53E-F4E3-42BA-850E-24BFFBE63118}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3417ABEF-F685-42DF-807A-C81F050AFEED}

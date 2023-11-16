@@ -46,9 +46,9 @@ jobs:
         with:
           result-encoding: string
           script: |
-            let result = `### 📄${{ inputs.location }} Semgrep Analysis\n\n`;
+            let result = `### :clipboard: ${{ inputs.location }} Semgrep Analysis\n\n`;
             if (${{ inputs.length }} === 0) {
-              result += "✅Congratulations! There is no findings\n\n";
+              result += "- :ok_woman: Congratulations! There is no findings\n\n";
             }else {
               result += `#### Summary Table\n\n${{ steps.findings_table.outputs.table }}\n\n`;
               result += `#### Findings\n\n${{ steps.message_table.outputs.table }}\n\n`;

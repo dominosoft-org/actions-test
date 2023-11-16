@@ -24,9 +24,9 @@ jobs:
       front_pnpm: ${{ steps.filters.outputs.front_pnpm }}
       docfx: ${{ steps.changes.outputs.docfx }}
     steps:
-      - name: Checkout🛎️
+      - name: ":baggage_claim: Checkout"
         uses: actions/checkout@v4
-      - name: Filter changes🔎
+      - name: ":flags: Filter changes"
         uses: dorny/paths-filter@v2
         id: filters
         with:
@@ -88,9 +88,10 @@ jobs:
     needs: [back, back_common, back_fakes, back_csproj, front, front_pnpm]
     runs-on: ubuntu-latest
     outputs:
-      comment: ${{ steps.comment.outputs.result }}
+      comment: ${{ steps.create_comment.outputs.result }}
     steps:
-      - id: comment
+      - name: "🖊️ Create Comment"
+        id: create_comment
         uses: actions/github-script@v7
         with:
           result-encoding: string
@@ -103,10 +104,10 @@ jobs:
             ];
             return job_comments.filter(e => e.length > 0).join('\n\n');
 
-  output_comment:
-    if: ${{ always() && github.event_name == 'pull_request' && needs.create_comment.outputs.comment != '' }}
+  post_comment:
     needs: create_comment
+    if: ${{ always() && needs.create_comment.outputs.comment != '' }}
     uses: ./.github/workflows/2_post_comment.yaml
     with:
-      title: "🙏Code Summary"
+      title: ":octocat: Code Summary"
       comment: "${{ needs.create_comment.outputs.comment }}"

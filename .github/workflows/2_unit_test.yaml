@@ -22,10 +22,10 @@ jobs:
       comment: ${{ steps.create_comment.outputs.result }}
 
     steps:
-      - name: Checkout🛎️
+      - name: 💼 Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Nuget cache⚡
+      - name: ⚡ Setup Nuget Cache
         uses: actions/cache@v3
         with:
           path: ~/.nuget/packages
@@ -33,20 +33,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Add MSBuild to PATH
+      - name: 🖥️ Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      - name: Setup VSTest Path
+      - name: 🖥️ Setup VSTest
         uses: darenm/Setup-VSTest@v1.2
 
-      - name: Generate Unit Test Report
+      - name: ⚖️ Unit Test
         run: |
           cd .\backend\NeuroFramework.Common
           dotnet restore --configfile "github-actions-nuget.config"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet
           vstest.console.exe /Platform:x64 /InIsolation /Blame /Logger:trx /Enablecodecoverage ".\tests\NeuroFramework.*\bin\Release\net7.0\**.Tests.dll" /Collect:"Code Coverage;Format=Cobertura"
 
-      - name: Test Report
+      - name: 📝 Reporting
         if: ${{ !cancelled() }}
         id: test_report
         uses: phoenix-actions/test-reporting@v12
@@ -59,7 +59,7 @@ jobs:
           list-suites: "all"
           list-tests: "all"
 
-      - name: Create Comment
+      - name: 🖊️ Create Comment
         if: ${{ !cancelled() }}
         id: create_comment
         uses: actions/github-script@v7
@@ -70,7 +70,7 @@ jobs:
             comment += "Check The Unit Test Report: **${{ steps.test_report.outputs.runHtmlUrl }}**\n\n";
             return comment;
 
-      - name: Upload Coverage Report
+      - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v3
         if: ${{ !cancelled() }}
         with:
@@ -84,12 +84,13 @@ jobs:
     outputs:
       comment: ${{ steps.create_comment.outputs.result }}
     steps:
-      - uses: actions/download-artifact@v3
+      - name: ⬇️ Download Artifact
+        uses: actions/download-artifact@v3
         with:
           name: code coverage report
           path: coveragereport/
 
-      - name: Code Coverage Report
+      - name: 📝 Reporting
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
           filename: coveragereport/**/*.cobertura.xml
@@ -102,14 +103,14 @@ jobs:
           output: both
           thresholds: "60 80"
 
-      - name: Upload Coverage Result Report
+      - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v3
         if: ${{ !cancelled() }}
         with:
           name: code coverage markdown report
           path: code-coverage-results.md
 
-      - name: Create Comment
+      - name: 🖊️ Create Comment
         if: ${{ !cancelled() }}
         id: create_comment
         uses: actions/github-script@v7
@@ -120,13 +121,13 @@ jobs:
             return readFileSync('./code-coverage-results.md').toString() + "\n\n";
 
   merge_comment:
-    needs: [ unit_test, code_coverage_report ]
+    needs: [unit_test, code_coverage_report]
     runs-on: ubuntu-latest
     if: ${{ !cancelled() }}
     outputs:
       comment: ${{ steps.merge_comments.outputs.result }}
     steps:
-      - name: Merge Comments
+      - name: 📰 Merge Comments
         id: merge_comments
         uses: actions/github-script@v7
         with:

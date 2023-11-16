@@ -12,31 +12,36 @@ jobs:
     outputs:
       comment: ${{ steps.create_comment.outputs.comment }}
     steps:
-      - name: Checkout🛎️
+      - name: 💼 Checkout
         uses: actions/checkout@v4
-      - name: Setup Node⚡
+
+      - name: 🖥️ Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-      - name: Setup pnpm⚡
+
+      - name: 🖥️ Setup pnpm
         uses: pnpm/action-setup@v2
         id: pnpm-setup
         with:
           version: latest
           run_install: false
-      - name: Get pnpm store directory💾
+
+      - name: 💾 Get pnpm Store Directory
         id: pnpm_cache
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - name: Setup pnpm cache⚡
+
+      - name: ⚡ Setup pnpm cache
         uses: actions/cache@v3
         with:
           path: ${{ steps.pnpm_cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('./frontend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      - name: Install dependencies📦
+
+      - name: 📦 Install Dependencies
         run: |
           # Globalにlicense-checker-rseidelsohnをインストール
           pnpm install -g license-checker-rseidelsohn
@@ -46,7 +51,8 @@ jobs:
             cd ${directories[$i]}
             pnpm install
           done
-      - name: Run License Checker👀
+
+      - name: 👀 Check License
         run: |
           # ライセンスOKのリストを取得し、カンマ区切りの文字列に変換する
           excludeLicenses=$(cat ./license-whitelist.json | jq -r '.excludeLicenses | join(",")')
@@ -59,7 +65,8 @@ jobs:
             # ヘッダーは不要なので1行目を削除しておく
             sed -e '1d' -i ./lc.csv
           done
-      - name: Create Comment🖊️
+
+      - name: 🖊️ Create Comment
         id: create_comment
         run: |
           # すべてのlc.csvの結果から重複を排除した配列を取得する。

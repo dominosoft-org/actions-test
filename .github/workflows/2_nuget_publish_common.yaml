@@ -23,10 +23,10 @@ jobs:
     needs: version_increment
 
     steps:
-      - name: Checkout🛎️
+      - name: 💼 Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Nuget cache⚡
+      - name: ⚡ Setup Nuget Cache
         uses: actions/cache@v3
         with:
           path: ~/.nuget/packages
@@ -34,16 +34,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Add MSBuild to PATH
+      - name: 🖥️ Setup MSBuild
         uses: microsoft/setup-msbuild@v1
 
-      - name: Build Solution
+      - name: ⚒️ Build
         run: |
           cd .\backend\NeuroFramework.Common
           dotnet restore --configfile "github-actions-nuget.config"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet -p:Version=${{ needs.version_increment.outputs.next }}
 
-      - name: Publish to GitHub Packages
+      - name: 🎁 Publish
         uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
         with:
           nupkg-path: '.\backend\NeuroFramework.Common\src\**\bin\Release\*.nupkg'

@@ -24,9 +24,9 @@ jobs:
       front_pnpm: ${{ steps.filters.outputs.front_pnpm }}
       docfx: ${{ steps.changes.outputs.docfx }}
     steps:
-      - name: ":baggage_claim: Checkout"
+      - name: 💼 Checkout
         uses: actions/checkout@v4
-      - name: ":flags: Filter changes"
+      - name: 🚩 Filter changes
         uses: dorny/paths-filter@v2
         id: filters
         with:
@@ -90,7 +90,7 @@ jobs:
     outputs:
       comment: ${{ steps.create_comment.outputs.result }}
     steps:
-      - name: "🖊️ Create Comment"
+      - name: 🖊️ Create Comment
         id: create_comment
         uses: actions/github-script@v7
         with:

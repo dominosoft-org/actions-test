@@ -10,21 +10,21 @@ jobs:
   semgrep:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout🛎️
+      - name: 💼 Checkout
         uses: actions/checkout@v4
-      - name: Create Command
+      - name: 🎞️ Create Command
         id: create-command
         run: |
           config=$(cat ./devtools/semgrep/semgrep-frontend.config|tr '\n' ' '|sed -e 's/ $/\n/g')
           semgrep_command_args=$(echo "scan $config ./frontend --sarif --output ./frontend/frontend.sarif")
           echo "args=$(echo $semgrep_command_args)" >> "$GITHUB_OUTPUT"
-      - name: Scan🌈
+      - name: 🌈 Scan
         id: scan
         uses: docker://returntocorp/semgrep
         with:
           entrypoint: "semgrep"
           args: ${{ steps.create-command.outputs.args }}
-      - name: Upload Report📑
+      - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: semgrep frontend report
@@ -34,7 +34,6 @@ jobs:
             ./devtools/semgrep/semgrep-report-generation.sh
 
   analyze_result:
-    name: Analyze Semgrep Result
     needs: semgrep
     uses: ./.github/workflows/2_semgrep_analyze.yaml
     with:
@@ -42,7 +41,7 @@ jobs:
       descriptionKey: .fullDescription.text
 
   create_comment:
-    name: Create Comment
+    name: 🖊️ Create Comment
     uses: ./.github/workflows/2_semgrep_create_comment.yaml
     needs: analyze_result
     with:
@@ -56,4 +55,5 @@ jobs:
     if: needs.analyze_result.outputs.reject > 0
     runs-on: ubuntu-latest
     steps:
-      - run: exit 1 # 0以外の値を返すとジョブは失敗となる
+      - name: 🚨 Fail
+        run: exit 1 # 0以外の値を返すとジョブは失敗となる

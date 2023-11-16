@@ -33,14 +33,14 @@ jobs:
       capitalized: ${{ steps.case.outputs.capitalized }}
 
     steps:
-      - name: Download Artifact
+      - name: ⬇️ Download Artifact
         id: download_artifact
         uses: actions/download-artifact@v3
         with:
           name: semgrep ${{ inputs.location }} report
           path: semgrepreport/
 
-      - name: Generate Rule Info For Semgrep Findings
+      - name: 🤖 Generate Semgrep Rule Informaton
         id: rule_info
         run: |
           cd ./semgrepreport/${{ inputs.location }}
@@ -48,16 +48,15 @@ jobs:
           cd ../devtools/semgrep/
           location="${{ inputs.location }}" descriptionKey="${{ inputs.descriptionKey }}" bash semgrep-rule-info-generation.sh
 
-      - name: Generate Semgrep Finding Report
+      - name: 🤖 Generate Semgrep Finding Report
         if: steps.rule_info.outputs.length > 0
         id: extract
         run: |
           cd ./semgrepreport/devtools/semgrep/
           latestsarif="${{ steps.rule_info.outputs.latestsarif }}" bash semgrep-report-generation.sh
 
-      - name: Change Location Case
+      - name: 🔠 Change Location Case
         id: case
         uses: ASzc/change-string-case-action@v5
-
         with:
           string: ${{ inputs.location }}

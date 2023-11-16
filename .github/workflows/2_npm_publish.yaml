@@ -31,38 +31,45 @@ jobs:
         working-directory: ./frontend/${{ inputs.frontend_dir_name }}
 
     steps:
-      - name: Checkout🛎️
+      - name: 💼 Checkout
         uses: actions/checkout@v4
-      - name: Setup Node⚡
+
+      - name: 🖥️ Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: "18"
           registry-url: "https://npm.pkg.github.com"
-      - name: Setup pnpm⚡
+
+      - name: 🖥️ Setup pnpm
         uses: pnpm/action-setup@v2
         id: pnpm-setup
         with:
           version: latest
           run_install: false
-      - name: Get pnpm store directory💾
+
+      - name: 💾 Get pnpm Store Directory
         id: pnpm_cache
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - name: Setup pnpm cache⚡
+
+      - name: ⚡ Setup pnpm Cache
         uses: actions/cache@v3
         with:
           path: ${{ steps.pnpm_cache.outputs.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('./frontend/**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-      - name: Install dependencies📦
+
+      - name: 📦 Install Dependencies
         run: pnpm i
-      - name: Build
+
+      - name: ⚒️ Build
         run: |
           npm version ${{ needs.version_increment.outputs.next }}
           pnpm run build
-      - name: Publish
+
+      - name: 🎁 Publish
         run: |
           cp .npmrc.sample .npmrc
           pnpm publish --no-git-checks

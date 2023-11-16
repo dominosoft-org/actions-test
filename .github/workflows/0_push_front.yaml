@@ -17,12 +17,12 @@ jobs:
       run:
         working-directory: ./frontend
     steps:
-      - name: Checkout🛎️
+      - name: 💼 Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: List Target Directories
+      - name: 📝 List Target Directories
         id: dir_list
         run: |
           # ブランチのdiffファイル名を取得

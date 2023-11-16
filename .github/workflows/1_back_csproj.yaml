@@ -9,5 +9,4 @@ on:
 
 jobs:
   license_check:
-    name: Backend License Check✅
     uses: ./.github/workflows/2_back_license.yaml

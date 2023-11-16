@@ -20,12 +20,12 @@ jobs:
       is_new_tag: ${{ steps.exists_tags.outputs.result == 'new_tag' || steps.exists_tags.outputs.result == 'new_tag_prefix' }}
 
     steps:
-      - name: Checkout🛎️
+      - name: 💼 Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Check Exists Tags
+      - name: 🏷️ Check Tags
         id: exists_tags
         run: |
           if [ -n "${{ inputs.prefix }}" ];
@@ -43,7 +43,7 @@ jobs:
               fi;
           fi
 
-      - name: Create Tag Version
+      - name: 🔖 Create Tag
         if: steps.exists_tags.outputs.result == 'new_tag' || steps.exists_tags.outputs.result == 'new_tag_prefix'
         id: tag_version
         run: |
@@ -52,7 +52,7 @@ jobs:
             else echo version='0.0.1' >> $GITHUB_OUTPUT;
           fi
 
-      - name: Add New Tag
+      - name: 🔖 Add New Tag
         if: steps.exists_tags.outputs.result == 'new_tag'
         uses: pkgdeps/git-tag-action@v2
         with:
@@ -61,7 +61,7 @@ jobs:
           git_commit_sha: ${{ github.sha }}
           version: ${{ steps.tag_version.outputs.version }}
 
-      - name: Add New Prefix Tag
+      - name: 🔖 Add New Prefix Tag
         if: steps.exists_tags.outputs.result == 'new_tag_prefix'
         uses: pkgdeps/git-tag-action@v2
         with:
@@ -80,17 +80,18 @@ jobs:
       next_version: ${{ steps.bump_version.outputs.next-version }}
 
     steps:
-      - name: Checkout🛎️
+      - name: 💼 Checkout
         uses: actions/checkout@v4
 
-      - uses: oprypin/find-latest-tag@v1
+      - name: 🏷️ Get Latest Tag
+        uses: oprypin/find-latest-tag@v1
         id: get_latest_tag
         with:
           repository: ${{ github.repository }}
           releases-only: false
           prefix: ${{ inputs.prefix }}
 
-      - name: Remove Prefix
+      - name: 🪠 Remove Prefix
         id: semantic_version
         run: |
           if ${{ inputs.prefix && true || false }};
@@ -98,14 +99,14 @@ jobs:
             else echo version=${{ steps.get_latest_tag.outputs.tag }} >> $GITHUB_OUTPUT;
           fi
 
-      - name: Bump Release Version
+      - name: 🆙 Bump Version
         id: bump_version
         uses: christian-draeger/increment-semantic-version@1.1.0
         with:
           current-version: ${{ steps.semantic_version.outputs.version }}
           version-fragment: ${{ inputs.version_fragment }}
 
-      - name: Update Git Tag
+      - name: 🔖 Update Tag
         uses: pkgdeps/git-tag-action@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

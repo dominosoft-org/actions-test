@@ -10,7 +10,6 @@ on:
 
 jobs:
   publish:
-    name: Publish NuGet packages
     uses: ./.github/workflows/2_nuget_publish_fakes.yaml
     secrets:
       REPO_ACCOUNT: ${{  secrets.REPO_ACCOUNT  }}

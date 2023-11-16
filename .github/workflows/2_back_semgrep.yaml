@@ -10,22 +10,22 @@ jobs:
   semgrep:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout🛎️
+      - name: 💼 Checkout
         uses: actions/checkout@v4
-      - name: Create Command
+      - name: 🎞️ Create Command
         id: create-command
         run: |
           config=$(cat ./devtools/semgrep/semgrep-backend.config|tr '\n' ' '|sed -e 's/ $/\n/g')
           semgrep_command_args=$(echo "scan $config ./backend/NeuroFramework.Common/src --sarif --output ./backend/backend.sarif")
           echo "$semgrep_command_args"
           echo "args=$(echo $semgrep_command_args)" >> "$GITHUB_OUTPUT"
-      - name: Scan🌈
+      - name: 🌈 Scan
         id: scan
         uses: docker://returntocorp/semgrep
         with:
           entrypoint: "semgrep"
           args: ${{ steps.create-command.outputs.args }}
-      - name: Upload Report📑
+      - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: semgrep backend report
@@ -35,7 +35,6 @@ jobs:
             ./devtools/semgrep/semgrep-report-generation.sh
 
   analyze_result:
-    name: Analyze Semgrep Result
     needs: semgrep
     uses: ./.github/workflows/2_semgrep_analyze.yaml
     with:
@@ -51,7 +50,7 @@ jobs:
       findings: ${{ needs.analyze_result.outputs.findings }}
       message: ${{ needs.analyze_result.outputs.message }}
 
-  judge-reject:
+  judge_reject:
     needs: analyze_result
     if: needs.analyze_result.outputs.reject > 0
     runs-on: ubuntu-latest

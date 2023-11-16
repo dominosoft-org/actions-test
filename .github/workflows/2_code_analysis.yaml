@@ -9,32 +9,35 @@ on:
         required: true
     outputs:
       comment:
-        value: ${{ jobs.code-analysis.outputs.comment }}
+        value: ${{ jobs.code_analysis.outputs.comment }}
 env:
   GITHUB_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
   GITHUB_PKG_NFW_AUTH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
 
 jobs:
-  code-analysis:
+  code_analysis:
     runs-on: ubuntu-latest
     outputs:
       comment: ${{ steps.comment.outputs.result }}
 
     steps:
-      - name: Checkout🛎️
+      - name: 💼 Checkout
         uses: actions/checkout@v4
-      - name: Setup Nuget cache⚡
+
+      - name: ⚡ Setup Nuget Cache
         uses: actions/cache@v3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-      - name: Setup .NET⚡
+
+      - name: 🖥️ Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.x
-      - name: Code Analysis
+
+      - name: 🕵️ Code Analysis
         id: code_analysis
         run: |
           cd ./backend/NeuroFramework.Common/
@@ -42,7 +45,7 @@ jobs:
           dotnet restore --configfile "github-actions-nuget.config"
           dotnet build -m --no-restore -p:Configuration=Release -p:EnforceCodeStyleInBuild=true -p:TreatWarningsAsErrors=true -p:IsGithubActions=true > CodeAnalysis.log
 
-      - name: Create Comment
+      - name: 🖊️ Create Comment
         id: comment
         if: always()
         uses: actions/github-script@v7

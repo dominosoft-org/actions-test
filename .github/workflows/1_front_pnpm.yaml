@@ -9,5 +9,4 @@ on:
 
 jobs:
   license_check:
-    name: Frontend License Check✅
     uses: ./.github/workflows/2_front_license.yaml

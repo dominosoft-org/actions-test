@@ -66,9 +66,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            let comment="### :microscope: Backend Unit Test\n\n";
-            comment += "**${{ steps.test_report.outputs.runHtmlUrl }}**\n\n";
-            return comment;
+            return "**${{ steps.test_report.outputs.runHtmlUrl }}**\n\n";
 
       - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v3
@@ -133,8 +131,10 @@ jobs:
         with:
           result-encoding: string
           script: |
+            let comment = "### :microscope: Backend Unit Test\n\n";
             const job_comments = [
               `${{ needs.code_coverage_report.outputs.comment }}`,
               `${{ needs.unit_test.outputs.comment }}`,
             ]
-            return job_comments.filter(e => e.length > 0).join('\n\n');
+            comment += job_comments.filter(e => e.length > 0).join('\n\n');
+            return comment;

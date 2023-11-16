@@ -16,27 +16,42 @@ jobs:
         id: get_artifact
         uses: actions/github-script@v7
         with:
+          result-encoding: string
           script: |
             const eventObj = ${{ toJSON(github.event.workflow_run) }};
+            if (!eventObj.pull_requests?.length) {
+              // このワークフローが走る前にPRがマージされた場合、pull_requestsは空の配列となる。
+              // この場合は何もしない。
+              return;
+            }
+            core.setOutput('issue_number', eventObj.pull_requests[0].number);
             const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
               owner: context.repo.owner,
               repo: context.repo.repo,
               run_id: eventObj.id
             });
-            const artifact = artifacts.data.artifacts.filter(artifact => artifact.expired === false)[0];
-            if (artifact) {
-              core.setOutput('artifact_id', artifact.id);
-              const downloadUrl = "${{ github.server_url }}/${{ github.repository }}/suites/" + `${eventObj.check_suite_id}/artifacts/${artifact.id}`;
-              core.setOutput('artifact_url', downloadUrl);
+            const artifacts = artifacts.data.artifacts.filter(artifact => artifact.expired === false);
+            if (!artifacts.length) {
+              // Artifactがない場合は何もしない。
+              return;
             }
-            // context.issue.numberはPRの番号
-            core.setOutput('issue_number', eventObj.pull_requests[0].number);
-            core.setOutput('head_sha', context.sha);
+            let result = "### :gift: Semgrep Artifact\n\n";
+            result += "![badge]\n";
+            result += "You can download the semgrep sarif file from the link below.\n";
+            result += "Please note that file only stay for around 90 days!\n\n";
+            result += "| Artifact ID | Link                    |\n";
+            result += "| ----------- | ----------------------- |\n";
+            for (const artifact of artifacts.data.artifacts) {
+              const downloadUrl = "${{ github.server_url }}/${{ github.repository }}/suites/" + `${eventObj.check_suite_id}/artifacts/${artifact.id}`;
+              result += `| ${artifact.id} | ${downloadUrl} |\n`;
+            }
+            result += "\n[badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge\n";
+            return result;
 
       - name: 🔎 Find Comment
         uses: peter-evans/find-comment@v2
         id: find_comment
-        if: ${{ steps.get_artifact.outputs.artifact_id != '' }}
+        if: ${{ steps.get_artifact.outputs.result != '' }}
         with:
           issue-number: ${{ steps.get_artifact.outputs.issue_number }}
           comment-author: "github-actions[bot]"
@@ -49,16 +64,4 @@ jobs:
         with:
           issue-number: ${{ steps.get_artifact.outputs.issue_number }}
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
-          body: |-
-            ### :gift: Semgrep Artifact
-
-            ![badge]
-            You can download the semgrep sarif file from the link below.
-            Please note that file only stay for around 90 days!
-
-            | Name        | Link                    |
-            | ----------- | ----------------------- |
-            | Commit      | ${{ steps.get_artifact.outputs.head_sha }}     |
-            | Artifact    | [${{ steps.get_artifact.outputs.artifact_id }}](${{ steps.get_artifact.outputs.artifact_url }}) |
-
-            [badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge
+          body: ${{ steps.get_artifact.outputs.result }}

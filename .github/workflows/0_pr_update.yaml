@@ -83,14 +83,14 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.front_pnpm == 'true' }}
     uses: ./.github/workflows/1_front_pnpm.yaml
 
-  post_comment:
+  create_comment:
     if: ${{ always() && github.event_name == 'pull_request' }}
     needs: [back, back_common, back_fakes, back_csproj, front, front_pnpm]
     runs-on: ubuntu-latest
     outputs:
       comment: ${{ steps.create_comment.outputs.result }}
     steps:
-      - name: ":pencil2: Create Comment"
+      - name: "🖊️ Create Comment"
         id: create_comment
         uses: actions/github-script@v7
         with:
@@ -103,9 +103,11 @@ jobs:
               `${{ needs.front_pnpm.outputs.comment }}`
             ];
             return job_comments.filter(e => e.length > 0).join('\n\n');
-      - name: ":thought_balloon: Post Comment"
-        uses: ./.github/workflows/2_post_comment.yaml
-        if: ${{ steps.create_comment.outputs.result != '' }}
-        with:
-          title: ":octocat: Code Summary"
-          comment: "${{ steps.create_comment.outputs.result }}"
+
+  post_comment:
+    needs: create_comment
+    if: ${{ always() && needs.create_comment.outputs.comment != '' }}
+    uses: ./.github/workflows/2_post_comment.yaml
+    with:
+      title: ":octocat: Code Summary"
+      comment: "${{ needs.create_comment.outputs.comment }}"

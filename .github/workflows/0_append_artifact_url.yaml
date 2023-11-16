@@ -25,13 +25,16 @@ jobs:
               return;
             }
             core.setOutput('issue_number', eventObj.pull_requests[0].number);
-            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+            const response = await github.rest.actions.listWorkflowRunArtifacts({
               owner: context.repo.owner,
               repo: context.repo.repo,
               run_id: eventObj.id
             });
-            const validArtifacts = artifacts.data.artifacts.filter(artifact => artifact.expired === false);
-            if (!validArtifacts.length) {
+            if (response?.data?.artifacts?.length) {
+              return;
+            }
+            const artifacts = response.data.artifacts.filter(artifact => artifact.expired === false);
+            if (!artifacts.length) {
               // Artifactがない場合は何もしない。
               return;
             }
@@ -41,7 +44,7 @@ jobs:
             result += "Please note that file only stay for around 90 days!\n\n";
             result += "| Artifact ID | Link                    |\n";
             result += "| ----------- | ----------------------- |\n";
-            for (const artifact of validArtifacts.data.artifacts) {
+            for (const artifact of artifacts) {
               const downloadUrl = "${{ github.server_url }}/${{ github.repository }}/suites/" + `${eventObj.check_suite_id}/artifacts/${artifact.id}`;
               result += `| ${artifact.id} | ${downloadUrl} |\n`;
             }

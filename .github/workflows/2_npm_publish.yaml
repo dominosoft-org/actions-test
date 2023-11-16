@@ -65,6 +65,6 @@ jobs:
       - name: Publish
         run: |
           cp .npmrc.sample .npmrc
-          pnpm publish
+          pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}

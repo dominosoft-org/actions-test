@@ -61,6 +61,6 @@ jobs:
             if (contents) {
               contents = contents.replace(/\n/g, '\\n');
             }else {
-              contents = "✅Code Analysis passed";
+              contents = "- :ok_woman: Code Analysis passed";
             }
-            return "### Code Analysis\\n\\n" + contents + "\\n\\n";
+            return "### :information_desk_person: Code Analysis\\n\\n" + contents + "\\n\\n";

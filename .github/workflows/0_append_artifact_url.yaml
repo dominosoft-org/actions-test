@@ -50,7 +50,7 @@ jobs:
           issue-number: ${{ steps.get_artifact.outputs.issue_number }}
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           body: |-
-            #### :gift: Semgrep Artifact
+            ### :gift: Semgrep Artifact
 
             ![badge]
             You can download the semgrep sarif file from the link below.

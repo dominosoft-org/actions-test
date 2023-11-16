@@ -34,11 +34,11 @@ jobs:
         id: create_comment
         run: |
           cd ./backend/NeuroFramework.Common
-          result="### 📄Backend License Check\n\n"
+          result="### :moneybag: Backend License Check\n\n"
           lines=$(cat licenses4.json | jq '.[].PackageName')
           if [ -z "$lines" ]; then
             # すべてのライセンスがOKの場合
-            result+='✅All OK.'
+            result+='- :ok_woman: All OK.'
           else
             # ライセンスNGがある場合
             log=$(echo "${lines}" | sed -n '/,/,$p')

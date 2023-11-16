@@ -59,7 +59,9 @@ jobs:
       - name: Install dependencies📦
         run: pnpm i
       - name: Build
-        run: pnpm run build
+        run: |
+          npm version ${{ needs.version_increment.outputs.next }}
+          pnpm run build
       - name: Publish
         run: |
           cp .npmrc.sample .npmrc

@@ -1,4 +1,4 @@
-name: 2_append_artifact_url
+name: 0_append_artifact_url
 
 on:
   # artifactのURLはJob実行中には取得できないため、workflow_runのcompletedイベントを利用する
@@ -10,7 +10,6 @@ on:
 
 jobs:
   add_comment:
-    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: "📌 Get Artifact Information"
@@ -18,7 +17,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const eventObj = JSON.parse('${{ toJSON(github.event.workflow_run) }}');
+            const eventObj = ${{ toJSON(github.event.workflow_run) }};
             console.log(eventObj);
             const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
               owner: context.repo.owner,
@@ -38,6 +37,7 @@ jobs:
       - name: "🔎 Find Comment"
         uses: peter-evans/find-comment@v2
         id: find_comment
+        if: ${{ steps.get_artifact.outputs.artifact_id != '' }}
         with:
           issue-number: ${{ steps.get_artifact.outputs.issue_number }}
           comment-author: "github-actions[bot]"
@@ -46,12 +46,12 @@ jobs:
 
       - name: "🦜 Update Comment"
         uses: peter-evans/create-or-update-comment@v3
-        if: ${{ steps.get_artifact.outputs.artifact_id != '' }}
+        if: ${{ steps.find_comment.outputs.comment-id != '' }}
         with:
           issue-number: ${{ steps.get_artifact.outputs.issue_number }}
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           body: |-
-            #### Semgrep Artifact
+            #### 🎁 Semgrep Artifact
 
             ![badge]
             You can download the semgrep sarif file from the link below.

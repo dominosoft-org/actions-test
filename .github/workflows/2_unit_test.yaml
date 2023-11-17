@@ -73,7 +73,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: code coverage report
-          path: .\backend\NeuroFramework.Common\TestResults\**\*.cobertura.xml
+          path: .\backend\NeuroFramework.Common\TestResults\**\In\**\*.cobertura.xml
 
   code_coverage_report:
     needs: unit_test

@@ -38,17 +38,15 @@ jobs:
               // Artifactがない場合は何もしない。
               return;
             }
-            let result = "### :gift: Semgrep Artifact\n\n";
-            result += "![badge]\n";
-            result += "You can download the semgrep sarif file from the link below.\n";
+            let result = "### :gift: Artifacts\n\n";
             result += "Please note that file only stay for around 90 days!\n\n";
             result += "| Artifact ID | Link                    |\n";
             result += "| ----------- | ----------------------- |\n";
             for (const artifact of artifacts) {
               const downloadUrl = "${{ github.server_url }}/${{ github.repository }}/suites/" + `${eventObj.check_suite_id}/artifacts/${artifact.id}`;
-              result += `| ${artifact.id} | ${downloadUrl} |\n`;
+              result += `| ${artifact.id} | [${artifact.name}](${downloadUrl}) |\n`;
             }
-            result += "\n[badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge\n";
+            result += "\n";
             return result;
 
       - name: 🔎 Find Comment

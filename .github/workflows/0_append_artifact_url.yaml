@@ -30,7 +30,7 @@ jobs:
               repo: context.repo.repo,
               run_id: eventObj.id
             });
-            if (response?.data?.artifacts?.length) {
+            if (!response?.data?.artifacts?.length) {
               return;
             }
             const artifacts = response.data.artifacts.filter(artifact => artifact.expired === false);

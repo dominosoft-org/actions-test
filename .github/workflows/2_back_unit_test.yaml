@@ -1,4 +1,4 @@
-name: 2_unit_test
+name: 2_back_unit_test
 
 on:
   workflow_call:
@@ -9,7 +9,7 @@ on:
         required: true
     inputs:
       solution_directory:
-        description: 'slnファイルが存在するフォルダーへのパス（絶対パス、末尾はスラッシュであること。）'
+        description: 'slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス、末尾はスラッシュであること。）'
         type: string
         required: true
     outputs:
@@ -46,7 +46,7 @@ jobs:
 
       - name: ⚖️ Unit Test
         run: |
-          cd ${{ inputs.solution_directory }}
+          cd .${{ inputs.solution_directory }}
           dotnet restore --configfile "github-actions-nuget.config"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet
           vstest.console.exe /Platform:x64 /InIsolation /Blame /Logger:trx /Enablecodecoverage ".\tests\NeuroFramework.*\bin\Release\net7.0\**.Tests.dll" /Collect:"Code Coverage;Format=Cobertura"
@@ -57,7 +57,7 @@ jobs:
         uses: phoenix-actions/test-reporting@v12
         with:
           name: Unit Tests Report
-          path: "${{ inputs.solution_directory }}TestResults/**.trx"
+          path: ".${{ inputs.solution_directory }}TestResults/**.trx"
           reporter: dotnet-trx
           fail-on-error: "true"
           only-summary: "false"
@@ -78,7 +78,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: code coverage report
-          path: ${{ inputs.solution_directory }}TestResults/**/In/**/*.cobertura.xml
+          path: .${{ inputs.solution_directory }}TestResults/**/In/**/*.cobertura.xml
 
   code_coverage_report:
     needs: unit_test
@@ -105,13 +105,6 @@ jobs:
           indicators: true
           output: both
           thresholds: "60 80"
-
-      - name: ⬆️ Upload Artifact
-        uses: actions/upload-artifact@v3
-        if: ${{ !cancelled() }}
-        with:
-          name: code coverage markdown report
-          path: code-coverage-results.md
 
       - name: 🖊️ Create Comment
         if: ${{ !cancelled() }}

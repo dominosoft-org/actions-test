@@ -1,4 +1,4 @@
-name: 2_code_analysis
+name: 2_back_code_analysis
 
 on:
   workflow_call:
@@ -9,7 +9,7 @@ on:
         required: true
     inputs:
       solution_directory:
-        description: 'slnファイルが存在するフォルダーへのパス（絶対パス、末尾はスラッシュであること。）'
+        description: 'slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス、末尾はスラッシュであること。）'
         type: string
         required: true
       solution_filename:
@@ -49,7 +49,7 @@ jobs:
       - name: 🕵️ Code Analysis
         id: code_analysis
         run: |
-          cd ${{ inputs.solution_directory }}
+          cd .${{ inputs.solution_directory }}
           dotnet sln ${{ inputs.solution_filename }} remove tests/**/*.csproj
           dotnet restore --configfile "github-actions-nuget.config"
           dotnet build -m --no-restore -p:Configuration=Release -p:EnforceCodeStyleInBuild=true -p:TreatWarningsAsErrors=true -p:IsGithubActions=true > CodeAnalysis.log
@@ -62,8 +62,8 @@ jobs:
           result-encoding: string
           script: |
             const { readFileSync } = require('fs');
-            let contents = readFileSync('${{ inputs.solution_directory }}CodeAnalysis.log').toString();
-            contents = contents.replace("${{ inputs.solution_directory }}", "");
+            let contents = readFileSync('.${{ inputs.solution_directory }}CodeAnalysis.log').toString();
+            contents = contents.replace("${{ github.workspace }}${{ inputs.solution_directory }}", "");
             contents = contents.replace("src/", "");
             contents = contents.match(/FAILED[\s\S]*Error/g);
             if (contents) {

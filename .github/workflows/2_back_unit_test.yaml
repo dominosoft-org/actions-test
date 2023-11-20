@@ -106,13 +106,6 @@ jobs:
           output: both
           thresholds: "60 80"
 
-      - name: ⬆️ Upload Artifact
-        uses: actions/upload-artifact@v3
-        if: ${{ !cancelled() }}
-        with:
-          name: code coverage markdown report
-          path: code-coverage-results.md
-
       - name: 🖊️ Create Comment
         if: ${{ !cancelled() }}
         id: create_comment

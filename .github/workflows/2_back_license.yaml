@@ -50,19 +50,13 @@ jobs:
             });
             const excludeList = JSON.parse(new Buffer.from(data.content, data.encoding).toString());
             const licensesJson = readFileSync("./backend/NeuroFramework.Common/licenses.json");
-            const licenses = JSON.parse(licensesJson);
-            licenses.filter((license) => {
+            return JSON.parse(licensesJson).filter((license) => {
               return !excludeList.excludeLicenses.includes(license.LicenseType);
             }).filter((license) => {
-              return !excludeList.excludePackages.some((excludePackage) => {
-                return license.PackageName.startsWith(excludePackage);
-              });
+              return !excludeList.excludePackages.some((excludePackage) => license.PackageName.startsWith(excludePackage));
             }).filter((license) => {
-              return !excludeList.excludeAuthors.some((excludeAuthor) => {
-                return license.Authors.includes(excludeAuthor);
-              });
+              return !excludeList.excludeAuthors.some((excludeAuthor) => license.Authors.includes(excludeAuthor));
             });
-            return licenses;
       - name: 🖊️ Create Comment
         uses: actions/github-script@v7
         id: create_comment

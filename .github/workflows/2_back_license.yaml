@@ -70,7 +70,7 @@ jobs:
           result-encoding: string
           script: |
             let result = "### :moneybag: Backend License Check\n\n"
-            const licenses = JSON.parse(${{ steps.check.outputs.result }});
+            const licenses = ${{ steps.check.outputs.result }};
             if (licenses?.length) {
               result += licenses.map((license) => {
                 return `- ${license.PackageName} (${license.LicenseType})`;

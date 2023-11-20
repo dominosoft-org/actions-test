@@ -1,0 +1,45 @@
+name: 0_push_back
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "backend/FakesAssemblies/**"
+      - "backend/NeuroFramework.Common/**"
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      back_common: ${{ steps.filters.outputs.back_common }}
+      back_fakes: ${{ steps.filters.outputs.back_fakes }}
+    steps:
+      - name: 💼 Checkout
+        uses: actions/checkout@v4
+      - name: 🚩 Filter changes
+        uses: dorny/paths-filter@v2
+        id: filters
+        with:
+          filters: |
+            back_common:
+              - 'backend/NeuroFramework.Common/**'
+            back_fakes:
+              - "backend/FakesAssemblies/**"
+
+  publish_fakes:
+    needs: changes
+    uses: ./.github/workflows/2_nuget_publish_fakes.yaml
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_fakes == 'true' }}
+    secrets:
+      REPO_ACCOUNT: ${{  secrets.REPO_ACCOUNT  }}
+      REPO_ACCESS_TOKEN: ${{  secrets.REPO_ACCESS_TOKEN  }}
+
+  publish_common:
+    needs: [changes, publish_fakes]
+    uses: ./.github/workflows/2_nuget_publish_common.yaml
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_common == 'true' }}
+    secrets:
+      REPO_ACCOUNT: ${{  secrets.REPO_ACCOUNT  }}
+      REPO_ACCESS_TOKEN: ${{  secrets.REPO_ACCESS_TOKEN  }}

@@ -17,7 +17,6 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     outputs:
       back_common: ${{ steps.filters.outputs.back_common }}
-      back_fakes: ${{ steps.filters.outputs.back_fakes }}
       back_csproj: ${{ steps.filters.outputs.back_csproj }}
       front: ${{ steps.filters.outputs.front }}
       front_pnpm: ${{ steps.filters.outputs.front_pnpm }}

@@ -7,6 +7,11 @@ on:
         required: true
       REPO_ACCESS_TOKEN:
         required: true
+    inputs:
+      solution_directory:
+        description: 'slnファイルが存在するフォルダーへのパス（絶対パス、末尾はスラッシュであること。）'
+        type: string
+        required: true
     outputs:
       comment:
         value: ${{  jobs.merge_comment.outputs.comment  }}
@@ -41,7 +46,7 @@ jobs:
 
       - name: ⚖️ Unit Test
         run: |
-          cd .\backend\NeuroFramework.Common
+          cd ${{ inputs.solution_directory }}
           dotnet restore --configfile "github-actions-nuget.config"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet
           vstest.console.exe /Platform:x64 /InIsolation /Blame /Logger:trx /Enablecodecoverage ".\tests\NeuroFramework.*\bin\Release\net7.0\**.Tests.dll" /Collect:"Code Coverage;Format=Cobertura"
@@ -52,7 +57,7 @@ jobs:
         uses: phoenix-actions/test-reporting@v12
         with:
           name: Unit Tests Report
-          path: "./backend/NeuroFramework.Common/TestResults/**.trx"
+          path: "${{ inputs.solution_directory }}TestResults/**.trx"
           reporter: dotnet-trx
           fail-on-error: "true"
           only-summary: "false"
@@ -73,7 +78,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: code coverage report
-          path: .\backend\NeuroFramework.Common\TestResults\**\In\**\*.cobertura.xml
+          path: ${{ inputs.solution_directory }}TestResults/**/In/**/*.cobertura.xml
 
   code_coverage_report:
     needs: unit_test

@@ -463,3 +463,5 @@ wwwroot/
 
 # 検証用プログラムの出力を除外
 eval-data/
+
+# common only

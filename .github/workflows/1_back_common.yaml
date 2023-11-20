@@ -17,18 +17,18 @@ jobs:
     uses: ./.github/workflows/2_back_semgrep.yaml
 
   code_analysis:
-    uses: ./.github/workflows/2_code_analysis.yaml
+    uses: ./.github/workflows/2_back_code_analysis.yaml
     with:
-      solution_directory: /home/runner/work/actions-test/actions-test/backend/NeuroFramework.Common/
+      solution_directory: /backend/NeuroFramework.Common/
       solution_filename: Common.sln
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
       REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
 
   unit_test:
-    uses: ./.github/workflows/2_unit_test.yaml
+    uses: ./.github/workflows/2_back_unit_test.yaml
     with:
-      solution_directory: /home/runner/work/actions-test/actions-test/backend/NeuroFramework.Common/
+      solution_directory: /backend/NeuroFramework.Common/
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
       REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}

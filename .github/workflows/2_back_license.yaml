@@ -42,7 +42,7 @@ jobs:
           result-encoding: json
           script: |
             const { data } = await github.rest.repos.getContent({
-              owner: "${{ secrets.REPO_ACCOUNT }}",
+              owner: "dominosoft-org",
               repo: "actions-test",
               path: "license-whitelist.json",
               ref: "main"

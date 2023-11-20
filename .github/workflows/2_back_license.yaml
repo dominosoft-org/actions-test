@@ -79,4 +79,4 @@ jobs:
             }else {
               result += "- :ok_woman: All OK."
             }
-            retrun result;
+            return result;

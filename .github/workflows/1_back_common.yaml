@@ -19,7 +19,7 @@ jobs:
   code_analysis:
     uses: ./.github/workflows/2_back_code_analysis.yaml
     with:
-      solution_directory: /backend/NeuroFramework.Common/
+      solution_directory: backend/NeuroFramework.Common
       solution_filename: Common.sln
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
@@ -28,7 +28,7 @@ jobs:
   unit_test:
     uses: ./.github/workflows/2_back_unit_test.yaml
     with:
-      solution_directory: /backend/NeuroFramework.Common/
+      solution_directory: backend/NeuroFramework.Common
     secrets:
       REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
       REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}

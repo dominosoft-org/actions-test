@@ -9,7 +9,7 @@ on:
         required: true
     inputs:
       solution_directory:
-        description: 'slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス、末尾はスラッシュであること。）'
+        description: 'slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）'
         type: string
         required: true
     outputs:
@@ -49,7 +49,7 @@ jobs:
               ref: "main"
             });
             const excludeList = JSON.parse(new Buffer.from(data.content, data.encoding).toString());
-            const licensesJson = readFileSync("./backend/NeuroFramework.Common/licenses.json");
+            const licensesJson = readFileSync("./${{ inputs.solution_directory }}/licenses.json");
             return JSON.parse(licensesJson).filter((license) => {
               return !excludeList.excludeLicenses.includes(license.LicenseType);
             }).filter((license) => {

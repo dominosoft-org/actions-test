@@ -2,6 +2,16 @@ name: 2_back_license
 
 on:
   workflow_call:
+    secrets:
+      REPO_ACCOUNT:
+        required: true
+      REPO_ACCESS_TOKEN:
+        required: true
+    inputs:
+      solution_directory:
+        description: 'slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）'
+        type: string
+        required: true
     outputs:
       result:
         value: ${{ jobs.check.outputs.result }}
@@ -18,31 +28,49 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.x
-      - name: 👀 Check License
+      - name: 🚀 Run dotnet-project-licenses tool
         run: |
-          excludeLicenses=$(cat ./license-whitelist.json | jq -r '.excludeLicenses')
-          excludePackages=$(cat ./license-whitelist.json | jq -r '.excludePackages')
-          excludeAuthors=$(cat ./license-whitelist.json | jq -r '.excludeAuthors')
-          cd ./backend/NeuroFramework.Common
+          cd ./${{ inputs.solution_directory }}
           dotnet new tool-manifest
           dotnet tool install --local dotnet-project-licenses
           dotnet tool run dotnet-project-licenses -i ./ -u -j --packages-filter /NeuroFramework.*/
-          jq --argjson array "$excludeLicenses" '. | map(select(.LicenseType as $type | $array | index($type) | not))' licenses.json >> licenses2.json
-          jq --argjson array "$excludePackages" '. | map(select(.PackageName as $name | $array | any(. as $elem | $name | startswith($elem)) | not))' licenses2.json >> licenses3.json
-          jq --argjson array "$excludeAuthors" '. | map(select(.Authors as $authors | $array | any(. as $elem | $authors | index($elem)) | not))' licenses3.json >> licenses4.json
+      - name: 👀 Check License
+        id: check
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          result-encoding: json
+          script: |
+            const { readFileSync } = require('fs');
+            const { data } = await github.rest.repos.getContent({
+              owner: "dominosoft-org",
+              repo: "actions-test",
+              path: "license-whitelist.json",
+              ref: "main"
+            });
+            const excludeList = JSON.parse(new Buffer.from(data.content, data.encoding).toString());
+            const licensesJson = readFileSync("./${{ inputs.solution_directory }}/licenses.json");
+            return JSON.parse(licensesJson).filter((license) => {
+              return !excludeList.excludeLicenses.includes(license.LicenseType);
+            }).filter((license) => {
+              return !excludeList.excludePackages.some((excludePackage) => license.PackageName.startsWith(excludePackage));
+            }).filter((license) => {
+              return !excludeList.excludeAuthors.some((excludeAuthor) => license.Authors.includes(excludeAuthor));
+            });
       - name: 🖊️ Create Comment
+        uses: actions/github-script@v7
         id: create_comment
-        run: |
-          cd ./backend/NeuroFramework.Common
-          result="### :moneybag: Backend License Check\n\n"
-          lines=$(cat licenses4.json | jq '.[].PackageName')
-          if [ -z "$lines" ]; then
-            # すべてのライセンスがOKの場合
-            result+='- :ok_woman: All OK.'
-          else
-            # ライセンスNGがある場合
-            log=$(echo "${lines}" | sed -n '/,/,$p')
-            result+="${log//$'\n'/\\n}"
-            result+="\\n\\nIs it safe to use these libraries? Reviewers must judge that."
-          fi
-          echo "result=$(echo $result)" >> "$GITHUB_OUTPUT"
+        with:
+          result-encoding: string
+          script: |
+            let result = "### :moneybag: Backend License Check\n\n"
+            const licenses = ${{ steps.check.outputs.result }};
+            if (licenses?.length) {
+              result += licenses.map((license) => {
+                return `- ${license.PackageName} (${license.LicenseType})`;
+              }).join("\n");
+              result += "\n\nIs it safe to use these libraries? Reviewers must judge that."
+            }else {
+              result += "- :ok_woman: All OK."
+            }
+            return result;

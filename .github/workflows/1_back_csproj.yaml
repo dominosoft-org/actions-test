@@ -3,6 +3,11 @@ name: 1_back_csproj
 on:
   workflow_dispatch:
   workflow_call:
+    secrets:
+      REPO_ACCOUNT:
+        required: true
+      REPO_ACCESS_TOKEN:
+        required: true
     outputs:
       comment:
         value: ${{ jobs.license_check.outputs.result }}
@@ -10,3 +15,9 @@ on:
 jobs:
   license_check:
     uses: ./.github/workflows/2_back_license.yaml
+    with:
+      solution_directory: backend/NeuroFramework.Common
+    secrets:
+      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
+      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+  

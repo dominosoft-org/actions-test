@@ -75,7 +75,7 @@ jobs:
                 "--out ./licenses.json"
               ]);
               const licensesJson = readFileSync("./licenses.json");
-              Object.assign(mergedLicenses, JSON.parse(licensesJson);
+              Object.assign(mergedLicenses, JSON.parse(licensesJson));
             }
             // licenses.jsonは { "packageName1": { "licenses": "MIT" }, "packageName2": { "licenses": "MIT" }... } という形式で返ってくるので、
             // ループしやすいように [{ "key": "packageName1", "value": { "licenses": "MIT" }},... }]の配列に変換する。

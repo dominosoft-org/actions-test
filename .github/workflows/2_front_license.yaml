@@ -70,9 +70,12 @@ jobs:
               await exec.exec("license-checker-rseidelsohn", [
                 "--production",
                 "--json",
-                `--excludeLicenses ${excludeList.excludeLicenses.join(",")}`,
-                `--excludePackagesStartingWith ${excludeList.excludePackages.join(",")}`,
-                "--out ./licenses.json"
+                "--excludeLicenses",
+                `\"${excludeList.excludeLicenses.join(",")}\"`,
+                "--excludePackagesStartingWith",
+                `\"${excludeList.excludePackages.join(",")}\"`,
+                "--out",
+                "./licenses.json"
               ]);
               const licensesJson = readFileSync("./licenses.json");
               Object.assign(mergedLicenses, JSON.parse(licensesJson));

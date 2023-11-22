@@ -99,7 +99,7 @@ jobs:
               for (const license of licenses) {
                 result += `- ${license.key} (${license.value.licenses})\n`;
               }
-              result += "\n\nIs it safe to use these libraries? Reviewers must judge that."
+              result += "\n\n :thinking: Is it safe to use these libraries? Reviewers must judge that."
             }else {
               result += "- :ok_woman: All OK."
             }

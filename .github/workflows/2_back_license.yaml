@@ -69,7 +69,7 @@ jobs:
               result += licenses.map((license) => {
                 return `- ${license.PackageName} (${license.LicenseType})`;
               }).join("\n");
-              result += "\n\nIs it safe to use these libraries? Reviewers must judge that."
+              result += "\n\n :thinking: Is it safe to use these libraries? Reviewers must judge that."
             }else {
               result += "- :ok_woman: All OK."
             }

@@ -3,14 +3,14 @@ name: 2_front_license
 on:
   workflow_call:
     outputs:
-      comment:
-        value: ${{ jobs.check.outputs.comment }}
+      result:
+        value: ${{ jobs.check.outputs.result }}
 
 jobs:
   check:
     runs-on: ubuntu-latest
     outputs:
-      comment: ${{ steps.create_comment.outputs.comment }}
+      result: ${{ steps.create_comment.outputs.result }}
     steps:
       - name: 💼 Checkout
         uses: actions/checkout@v4
@@ -41,45 +41,66 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: 📦 Install Dependencies
+      - name: 🕵️ Search Paths
+        id: search_paths
         run: |
-          # Globalにlicense-checker-rseidelsohnをインストール
-          pnpm install -g license-checker-rseidelsohn
-          # 下記コマンドで、directoriesには./frontend/以下のディレクトリのフルパスが格納される
-          directories=($(ls -d ./frontend/*/ | xargs -n1 readlink -f))
-          for i in "${!directories[@]}"; do
-            cd ${directories[$i]}
-            pnpm install
-          done
+          echo "paths=$(find ./frontend -name pnpm-lock.yaml -exec dirname {} \;)" >> $GITHUB_OUTPUT
 
       - name: 👀 Check License
-        run: |
-          # ライセンスOKのリストを取得し、カンマ区切りの文字列に変換する
-          excludeLicenses=$(cat ./license-whitelist.json | jq -r '.excludeLicenses | join(",")')
-          # ライセンスOKのパッケージ名（先頭からの部分一致で使用する）を取得し、カンマ区切りの文字列に変換する
-          excludePackages=$(cat ./license-whitelist.json | jq -r '.excludePackages | join(",")')
-          directories=($(ls -d ./frontend/*/ | xargs -n1 readlink -f))
-          for i in "${!directories[@]}"; do
-            cd ${directories[$i]}
-            license-checker-rseidelsohn --production --csv --excludeLicenses "${excludeLicenses}" --excludePackagesStartingWith "${excludePackages}" --out ./lc.csv
-            # ヘッダーは不要なので1行目を削除しておく
-            sed -e '1d' -i ./lc.csv
-          done
+        id: check
+        uses: actions/github-script@v7
+        with:
+          result-encoding: json
+          script: |
+            const { readFileSync } = require('fs');
+            // Globalにlicense-checker-rseidelsohnをインストール
+            await exec.exec("pnpm", ["install", "-g", "license-checker-rseidelsohn"]);
+            // license-whitelist.jsonを取得
+            const { data } = await github.rest.repos.getContent({
+              owner: "dominosoft-org",
+              repo: "actions-test",
+              path: "license-whitelist.json",
+              ref: "main"
+            });
+            const excludeList = JSON.parse(new Buffer.from(data.content, data.encoding).toString());
+            const directories = "${{ steps.search_paths.outputs.paths }}".split(" ");
+            let mergedLicenses = {};
+            for (const directory of directories) {
+              process.chdir(directory);
+              await exec.exec("license-checker-rseidelsohn", [
+                "--production",
+                "--json",
+                "--excludeLicenses",
+                `\"${excludeList.excludeLicenses.join(",")}\"`,
+                "--excludePackagesStartingWith",
+                `\"${excludeList.excludePackages.join(",")}\"`,
+                "--out",
+                "./licenses.json"
+              ]);
+              const licensesJson = readFileSync("./licenses.json");
+              Object.assign(mergedLicenses, JSON.parse(licensesJson));
+            }
+            // licenses.jsonは { "packageName1": { "licenses": "MIT" }, "packageName2": { "licenses": "MIT" }... } という形式で返ってくるので、
+            // ループしやすいように [{ "key": "packageName1", "value": { "licenses": "MIT" }},... }]の配列に変換する。
+            // 変換前に、author（licenses.jsonではpublisher）のフィルタリングも行っておく。
+            return Object.entries(mergedLicenses)
+              .filter(e => excludeList.excludeAuthors.every((excludeAuthor) => excludeAuthor !== e[1].publisher))
+              .map(([key, value]) => ({key, value}));
 
       - name: 🖊️ Create Comment
         id: create_comment
-        run: |
-          # すべてのlc.csvの結果から重複を排除した配列を取得する。
-          lines=$(sort -u -s ./frontend/*/lc.csv)
-          result="### :moneybag: Frontend License Check\n\n"
-          if [ -z "$lines" ]; then
-            # すべてのライセンスがOKの場合
-            result+="✅All OK."
-          else
-            # ライセンスNGがある場合
-            log="🤷Is it safe to use these libraries? Reviewers must judge that.\n\n"
-            log+=$(echo "- ${lines}" | sed -n '/,/,$p')
-            log="${log//$'\n'/\\n}"
-            result+="$log"
-          fi
-          echo "comment=${result}" >> "$GITHUB_OUTPUT"
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            let result = "### :moneybag: Frontend License Check\n\n";
+            const licenses = ${{ steps.check.outputs.result }};
+            if (licenses.length) {
+              for (const license of licenses) {
+                result += `- ${license.key} (${license.value.licenses})\n`;
+              }
+              result += "\n\n :thinking: Is it safe to use these libraries? Reviewers must judge that."
+            }else {
+              result += "- :ok_woman: All OK."
+            }
+            return result;

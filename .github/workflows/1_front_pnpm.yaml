@@ -5,7 +5,7 @@ on:
   workflow_call:
     outputs:
       comment:
-        value: ${{ jobs.license_check.outputs.comment }}
+        value: ${{ jobs.license_check.outputs.result }}
 
 jobs:
   license_check:

@@ -123,8 +123,10 @@ jobs:
         with:
           result-encoding: string
           script: |
+            const { pascalCase } = require("change-case");
             const rows = ${{ steps.convert.outputs.result }};
-            let result = `### :clipboard: ${{ inputs.location }} Semgrep Analysis\n\n`;
+            const location = pascalCase("${{ inputs.location }}");
+            let result = `### :clipboard: ${location} Semgrep Analysis\n\n`;
             if (rows.length === 0) {
               result += "- :ok_woman: Congratulations! There is no findings\n\n";
             }else {

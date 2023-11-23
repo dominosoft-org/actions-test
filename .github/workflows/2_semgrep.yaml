@@ -1,0 +1,133 @@
+name: 2_semgrep
+
+on:
+  workflow_call:
+    secrets:
+      REPO_ACCESS_TOKEN:
+        required: true
+    inputs:
+      location:
+        description: 'backend or frontend'
+        type: string
+        required: true
+      path:
+        description: 'path to scan (ex: backend/NeuroFramework.Common/src)'
+        type: string
+        required: true
+    outputs:
+      comment:
+        value: ${{ jobs.report.outputs.result }}
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💼 Checkout
+        uses: actions/checkout@v4
+      - name: 🎞️ Create Command
+        id: create-command
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          result-encoding: string
+          script: |
+            const { readFileSync } = require('fs');
+            const { data } = await github.rest.repos.getContent({
+              owner: "${{ github.repository_owner }}",
+              repo: "actions-test",
+              path: "devtools/semgrep/semgrep-${{ inputs.location }}.config",
+              ref: "main"
+            });
+            const parameters = new Buffer.from(data.content, data.encoding).toString().replace(/\n/g, ' ');
+            const command = `scan ${parameters} --sarif --output ./${{ inputs.location }}/${{ inputs.location }}.sarif ./${{ inputs.path }}`;
+            return command;
+      - name: 🌈 Scan
+        id: scan
+        uses: docker://returntocorp/semgrep
+        with:
+          entrypoint: "semgrep"
+          args: ${{ steps.create-command.outputs.result }}
+      - name: ⬆️ Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: semgrep ${{ inputs.location }} report
+          path: |
+            ./${{ inputs.location }}/${{ inputs.location }}.sarif
+
+  report:
+    needs: scan
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.comment.outputs.result }}
+    steps:
+      - name: ⬇️ Download Artifact
+        id: download_artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: semgrep ${{ inputs.location }} report
+          path: semgrepreport/
+      - name: 🎞️ Convert Serif to Markdown Table Rows
+        id: convert
+        uses: actions/github-script@v7
+        with:
+          result-encoding: json
+          script: |
+            const { readFileSync } = require("fs");
+            const data = readFileSync("./semgrepreport/${{ inputs.location }}/${{ inputs.location }}.sarif").toString();
+            const sarif = JSON.parse(data);
+            const createCodeURL = (result) => {
+              if (!Array.isArray(result.locations)) {
+                return [];
+              }
+              return result.locations?.flatMap((location) => {
+                if (!location.physicalLocation) {
+                  return [];
+                }
+                const physicalLocation = location.physicalLocation;
+                if (!physicalLocation.artifactLocation) {
+                  return [];
+                }
+                if (!physicalLocation.region) {
+                  return [];
+                }
+                const lineNumber =
+                  physicalLocation.region.endLine !== undefined
+                    ? `L${physicalLocation.region.startLine}-L${physicalLocation.region.endLine}`
+                    : `L${physicalLocation.region.startLine}`;
+                return (
+                  "https://github.com/${{ github.repository }}/blob/${{ github.sha }}/${{ inputs.path }}/" +
+                  `${physicalLocation.artifactLocation.uri}#${lineNumber}`
+                );
+              });
+            };
+            const createRuleURL = (ruleId) => {
+              if (ruleId.startsWith("gitlab.security_code_scan")) {
+                const scanId = ruleId.replace("gitlab.security_code_scan.", "").split("-")[0];
+                return `https://security-code-scan.github.io/#${scanId}`;
+              }
+              return `https://semgrep.dev/r/${ruleId}`;
+            };
+            const createResult = (result) => {
+              const urls = createCodeURL(result)
+                .map((url) => `[code](${url})`)
+                .join("<br/>");
+              const ruleId = result.ruleId == undefined ? "" : `[${result.ruleId}](${createRuleURL(result.ruleId)})`;
+              const value = result.message.text?.slice(0, 40) + "...";
+              return `|${ruleId}|${urls}|${value}|`;
+            };
+            return sarif.runs.flatMap((run) => run.results?.flatMap((result) => createResult(result)) ?? []);
+      - name: 🖊️ Create Comment
+        if: always()
+        uses: actions/github-script@v7
+        id: comment
+        with:
+          result-encoding: string
+          script: |
+            const rows = ${{ steps.convert.outputs.result }};
+            let result = `### :clipboard: ${{ inputs.location }} Semgrep Analysis\n\n`;
+            if (rows.length === 0) {
+              result += "- :ok_woman: Congratulations! There is no findings\n\n";
+            }else {
+              result += `|Rule|Code|Message|\n|---|---|---|\n${results.join("\n")}`;
+            }
+            return result;

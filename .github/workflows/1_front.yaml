@@ -3,10 +3,18 @@ name: 1_front
 on:
   workflow_dispatch:
   workflow_call:
+    secrets:
+      REPO_ACCESS_TOKEN:
+        required: true
     outputs:
       comment:
-        value: ${{ jobs.front_semgrep.outputs.comment }}
+        value: ${{ jobs.semgrep.outputs.comment }}
 
 jobs:
-  front_semgrep:
-    uses: ./.github/workflows/2_front_semgrep.yaml
+  semgrep:
+    uses: ./.github/workflows/2_semgrep.yaml
+    with:
+      location: frontend
+      path: frontend
+    secrets:
+      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}

@@ -73,7 +73,7 @@ jobs:
           result-encoding: json
           script: |
             const { readFileSync } = require("fs");
-            const data = readFileSync("./semgrepreport/${{ inputs.location }}/${{ inputs.location }}.sarif").toString();
+            const data = readFileSync("${{ github.workspace }}/semgrepreport/${{ inputs.location }}/${{ inputs.location }}.sarif").toString();
             const sarif = JSON.parse(data);
             const createCodeURL = (result) => {
               if (!Array.isArray(result.locations)) {

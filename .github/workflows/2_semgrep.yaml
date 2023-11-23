@@ -128,6 +128,6 @@ jobs:
             if (rows.length === 0) {
               result += "- :ok_woman: Congratulations! There is no findings\n\n";
             }else {
-              result += `|Rule|Code|Message|\n|---|---|---|\n${results.join("\n")}`;
+              result += `|Rule|Code|Message|\n|---|---|---|\n${rows.join("\n")}`;
             }
             return result;

@@ -95,7 +95,7 @@ jobs:
                     ? `L${physicalLocation.region.startLine}-L${physicalLocation.region.endLine}`
                     : `L${physicalLocation.region.startLine}`;
                 return (
-                  "https://github.com/${{ github.repository }}/blob/${{ github.sha }}/${{ inputs.path }}/" +
+                  "https://github.com/${{ github.repository }}/blob/${{ github.sha }}/" +
                   `${physicalLocation.artifactLocation.uri}#${lineNumber}`
                 );
               });
@@ -124,10 +124,12 @@ jobs:
           result-encoding: string
           script: |
             const rows = ${{ steps.convert.outputs.result }};
-            let result = `### :clipboard: ${{ inputs.location }} Semgrep Analysis\n\n`;
+            const location = "${{ inputs.location }}";
+            // 手抜きなPascalCase変換
+            let result = `### :clipboard: ${location.slice(0,1).toUpperCase()}${location.slice(1)} Semgrep Analysis\n\n`;
             if (rows.length === 0) {
               result += "- :ok_woman: Congratulations! There is no findings\n\n";
             }else {
-              result += `|Rule|Code|Message|\n|---|---|---|\n${results.join("\n")}`;
+              result += `|Rule|Code|Message|\n|---|---|---|\n${rows.join("\n")}`;
             }
             return result;

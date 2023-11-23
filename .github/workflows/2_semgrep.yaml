@@ -95,7 +95,7 @@ jobs:
                     ? `L${physicalLocation.region.startLine}-L${physicalLocation.region.endLine}`
                     : `L${physicalLocation.region.startLine}`;
                 return (
-                  "https://github.com/${{ github.repository }}/blob/${{ github.sha }}/${{ inputs.path }}/" +
+                  "https://github.com/${{ github.repository }}/blob/${{ github.sha }}/" +
                   `${physicalLocation.artifactLocation.uri}#${lineNumber}`
                 );
               });

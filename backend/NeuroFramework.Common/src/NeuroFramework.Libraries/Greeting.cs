@@ -26,5 +26,6 @@ public class Greeting {
   /// <param name="process"></param>
   public void Run(string process) {
     Debug.Assert(process != null);
+    _ = Process.Start(process);
   }
 }

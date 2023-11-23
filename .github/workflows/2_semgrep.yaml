@@ -72,7 +72,8 @@ jobs:
         with:
           result-encoding: json
           script: |
-            const { readFileSync } = require("fs");
+            const { readFileSync, readdirSync } = require("fs");
+            console.log(readdirSync("${{ github.workspace }}/semgrepreport", {recursive:true}))
             const data = readFileSync("${{ github.workspace }}/semgrepreport/${{ inputs.location }}/${{ inputs.location }}.sarif").toString();
             const sarif = JSON.parse(data);
             const createCodeURL = (result) => {

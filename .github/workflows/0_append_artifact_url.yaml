@@ -56,7 +56,7 @@ jobs:
         with:
           issue-number: ${{ steps.get_artifact.outputs.issue_number }}
           comment-author: "github-actions[bot]"
-          body-includes: "Semgrep Analysis"
+          body-includes: "Code Summary"
           direction: last
 
       - name: 🦜 Update Comment

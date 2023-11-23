@@ -13,8 +13,13 @@ on:
         value: ${{ jobs.create_comment.outputs.comment }}
 
 jobs:
-  back_semgrep:
-    uses: ./.github/workflows/2_back_semgrep.yaml
+  semgrep:
+    uses: ./.github/workflows/2_semgrep.yaml
+    with:
+      location: backend
+      path: backend/NeuroFramework.Common/src
+    secrets:
+      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
 
   code_analysis:
     uses: ./.github/workflows/2_back_code_analysis.yaml
@@ -35,7 +40,7 @@ jobs:
 
   create_comment:
     if: always()
-    needs: [back_semgrep, code_analysis, unit_test]
+    needs: [semgrep, code_analysis, unit_test]
     runs-on: ubuntu-latest
     outputs:
       comment: ${{ steps.comment.outputs.result }}
@@ -47,7 +52,7 @@ jobs:
           result-encoding: string
           script: |
             const comments = [
-              `${{ needs.back_semgrep.outputs.comment }}`,
+              `${{ needs.semgrep.outputs.comment }}`,
               `${{ needs.code_analysis.outputs.comment }}`,
               `${{ needs.unit_test.outputs.comment }}`
             ]

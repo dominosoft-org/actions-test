@@ -127,9 +127,9 @@ jobs:
             // 手抜きなPascalCase変換
             let result = `### :clipboard: ${location.slice(0,1).toUpperCase()}${location.slice(1)} Semgrep Analysis\n\n`;
             if (rows.length === 0) {
-              result += "- :ok_woman: Congratulations! There is no findings\n\n";
+              result += "- :ok_woman: Congratulations! There is no findings.\n\n";
             }else {
-              result += "- :warning: There are some findings\n\n";
+              result += "- :warning: There are some findings.\n\n";
               result += `|Rule|Code|Message|\n|---|---|---|\n${rows.join("\n")}`;
             }
             return result;

@@ -33,7 +33,7 @@ jobs:
           script: |
             const { readFileSync } = require('fs');
             const { data } = await github.rest.repos.getContent({
-              owner: constext.repo.owner,
+              owner: context.repo.owner,
               repo: "actions-test",
               path: "devtools/semgrep/semgrep-${{ inputs.location }}.config",
               ref: "main"
@@ -129,6 +129,10 @@ jobs:
             if (rows.length === 0) {
               result += "- :ok_woman: Congratulations! There is no findings\n\n";
             }else {
+              result += "- :warning: There are some findings\n\n";
               result += `|Rule|Code|Message|\n|---|---|---|\n${rows.join("\n")}`;
             }
             return result;
+      - name: 💣 Failed if detected Findings
+        if: ${{ toJson(steps.convert.outputs.result).length > 0 }};
+        run: exit 1

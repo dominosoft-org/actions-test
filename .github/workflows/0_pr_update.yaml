@@ -6,7 +6,8 @@ on:
     branches:
       - "main"
     types:
-      - review_requested
+      - opened
+      - synchronize
     # pathsによるfilterは、dorny/paths-filterで行う
 
 jobs:

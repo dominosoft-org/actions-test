@@ -39,7 +39,7 @@ jobs:
               return;
             }
             let result = "### :gift: Artifacts\n\n";
-            result += "Please note that file only stay for around 90 days!\n\n";
+            result += "Please note that files only stay for around 90 days!\n\n";
             result += "| Artifact ID | Link                    |\n";
             result += "| ----------- | ----------------------- |\n";
             for (const artifact of artifacts) {

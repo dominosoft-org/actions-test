@@ -18,7 +18,6 @@ jobs:
       path: backend/NeuroFramework.Common/src
     secrets:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
-
   code_analysis:
     uses: ./.github/workflows/2_back_code_analysis.yaml
     with:
@@ -26,14 +25,12 @@ jobs:
       solution_filename: Common.sln
     secrets:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
-
   unit_test:
     uses: ./.github/workflows/2_back_unit_test.yaml
     with:
       solution_directory: backend/NeuroFramework.Common
     secrets:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
-
   create_comment:
     if: always()
     needs: [semgrep, code_analysis, unit_test]

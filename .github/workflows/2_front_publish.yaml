@@ -19,7 +19,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: 📝 List Target Directories
         id: dir_list
         run: |
@@ -28,7 +27,6 @@ jobs:
           # 変更されたfrontend/直下のディレクトリ名を取得
           path_list=[`echo "$changed_files" | grep -E "^frontend/.*/?$" | cut -d "/" -f2 | sort -u | sed "s/\$/\",/"  | sed "s/^/\ \ \"/"`]
           echo list=$path_list >> $GITHUB_OUTPUT
-
   publish:
     needs: collect
     if: needs.collect.outputs.dir_list != '[]'

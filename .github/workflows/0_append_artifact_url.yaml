@@ -33,7 +33,7 @@ jobs:
             if (!response?.data?.artifacts?.length) {
               return;
             }
-            const artifacts = response.data.artifacts.filter(artifact => (artifact != undefined) && (artifact.expired === false));
+            const artifacts = response.data.artifacts.filter(artifact => (artifact?.id) && (artifact.expired === false));
             if (!artifacts.length) {
               // Artifactがない場合は何もしない。
               return;
@@ -48,7 +48,6 @@ jobs:
             }
             result += "\n";
             return result;
-
       - name: 🔎 Find Comment
         uses: peter-evans/find-comment@v2
         id: find_comment
@@ -58,7 +57,6 @@ jobs:
           comment-author: "github-actions[bot]"
           body-includes: "Code Summary"
           direction: last
-
       - name: 🦜 Update Comment
         uses: peter-evans/create-or-update-comment@v3
         if: ${{ steps.find_comment.outputs.comment-id != '' }}

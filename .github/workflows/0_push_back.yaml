@@ -27,14 +27,12 @@ jobs:
               - 'backend/NeuroFramework.Common/**'
             back_fakes:
               - "backend/FakesAssemblies/**"
-
   publish_fakes:
     needs: changes
     uses: ./.github/workflows/2_nuget_publish_fakes.yaml
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_fakes == 'true' }}
     secrets:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
-
   publish_common:
     needs: [changes, publish_fakes]
     uses: ./.github/workflows/2_nuget_publish_common.yaml

@@ -15,15 +15,12 @@ jobs:
     uses: ./.github/workflows/2_version_increment.yaml
     with:
       version_fragment: "alpha"
-
   publish:
     runs-on: windows-latest
     needs: version_increment
-
     steps:
       - name: 💼 Checkout
         uses: actions/checkout@v4
-
       - name: ⚡ Setup Nuget Cache
         uses: actions/cache@v3
         with:
@@ -31,16 +28,13 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-
       - name: 🖥️ Setup MSBuild
         uses: microsoft/setup-msbuild@v1
-
       - name: ⚒️ Build
         run: |
           cd .\backend\NeuroFramework.Common
           dotnet restore --configfile "github-actions-nuget.config"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet -p:Version=${{ needs.version_increment.outputs.next }}
-
       - name: 🎁 Publish
         uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
         with:

@@ -19,11 +19,9 @@ jobs:
   publish:
     runs-on: windows-latest
     needs: version_increment
-
     steps:
       - name: 💼 Checkout
         uses: actions/checkout@v4
-
       - name: ⚡ Setup Nuget Cache
         uses: actions/cache@v3
         with:
@@ -31,7 +29,6 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-
       - name: 🆙 Increment Version
         run: |
           $items = Get-ChildItem ".\backend\FakesAssemblies\**\*.nuspec"
@@ -44,16 +41,13 @@ jobs:
               $content -replace $ret.Groups[1].Value,"${{ needs.version_increment.outputs.next }}" | Out-File $item
             }
           }
-
       - name: 🖥️ Setup MSBuild
         uses: microsoft/setup-msbuild@v1
-
       - name: ⚒️ Build
         run: |
           cd .\backend\FakesAssemblies
           dotnet restore
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet FakesAssemblies.sln
-
       - name: 🎁 Publish
         uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
         with:

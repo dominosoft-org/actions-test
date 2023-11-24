@@ -36,33 +36,28 @@ jobs:
               - 'frontend/**'
             front_pnpm:
               - 'frontend/**/pnpm-lock.yaml'
-
   back_common:
     needs: changes
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_common == 'true' }}
     uses: ./.github/workflows/1_back_common.yaml
     secrets:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
-
   back_csproj:
     needs: changes
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_csproj == 'true' }}
     uses: ./.github/workflows/1_back_csproj.yaml
     secrets:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
-
   front:
     needs: changes
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.front == 'true' }}
     uses: ./.github/workflows/1_front.yaml
     secrets:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
-
   front_pnpm:
     needs: changes
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.front_pnpm == 'true' }}
     uses: ./.github/workflows/1_front_pnpm.yaml
-
   create_comment:
     if: ${{ always() && github.event_name == 'pull_request' }}
     needs: [back_common, back_csproj, front, front_pnpm]
@@ -83,7 +78,6 @@ jobs:
               `${{ needs.front_pnpm.outputs.comment }}`
             ];
             return job_comments.filter(e => e.length > 0).join('\n\n');
-
   post_comment:
     needs: create_comment
     if: ${{ always() && needs.create_comment.outputs.comment != '' }}

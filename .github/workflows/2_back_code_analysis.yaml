@@ -7,11 +7,11 @@ on:
         required: true
     inputs:
       solution_directory:
-        description: 'slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）'
+        description: "slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）"
         type: string
         required: true
       solution_filename:
-        description: 'slnファイル名（拡張子含む）'
+        description: "slnファイル名（拡張子含む）"
         type: string
         required: true
     outputs:
@@ -26,11 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       comment: ${{ steps.comment.outputs.result }}
-
     steps:
       - name: 💼 Checkout
         uses: actions/checkout@v4
-
       - name: ⚡ Setup Nuget Cache
         uses: actions/cache@v3
         with:
@@ -38,12 +36,10 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-
       - name: 🖥️ Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.x
-
       - name: 🕵️ Code Analysis
         id: code_analysis
         run: |
@@ -51,7 +47,6 @@ jobs:
           dotnet sln ${{ inputs.solution_filename }} remove tests/**/*.csproj
           dotnet restore --configfile "github-actions-nuget.config"
           dotnet build -m --no-restore -p:Configuration=Release -p:EnforceCodeStyleInBuild=true -p:TreatWarningsAsErrors=true -p:IsGithubActions=true > CodeAnalysis.log
-
       - name: 🖊️ Create Comment
         id: comment
         if: always()

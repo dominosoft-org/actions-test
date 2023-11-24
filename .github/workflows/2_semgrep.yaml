@@ -7,11 +7,11 @@ on:
         required: true
     inputs:
       location:
-        description: 'backend or frontend'
+        description: "backend or frontend"
         type: string
         required: true
       path:
-        description: 'path to scan (ex: backend/NeuroFramework.Common/src)'
+        description: "path to scan (ex: backend/NeuroFramework.Common/src)"
         type: string
         required: true
     outputs:
@@ -33,7 +33,7 @@ jobs:
           script: |
             const { readFileSync } = require('fs');
             const { data } = await github.rest.repos.getContent({
-              owner: "${{ github.repository_owner }}",
+              owner: constext.repo.owner,
               repo: "actions-test",
               path: "devtools/semgrep/semgrep-${{ inputs.location }}.config",
               ref: "main"
@@ -53,7 +53,6 @@ jobs:
           name: semgrep ${{ inputs.location }} report
           path: |
             ./${{ inputs.location }}/${{ inputs.location }}.sarif
-
   report:
     needs: scan
     runs-on: ubuntu-latest

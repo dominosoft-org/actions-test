@@ -17,4 +17,3 @@ jobs:
       solution_directory: backend/NeuroFramework.Common
     secrets:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
-  

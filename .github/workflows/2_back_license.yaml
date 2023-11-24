@@ -7,7 +7,7 @@ on:
         required: true
     inputs:
       solution_directory:
-        description: 'slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）'
+        description: "slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）"
         type: string
         required: true
     outputs:
@@ -41,7 +41,7 @@ jobs:
           script: |
             const { readFileSync } = require('fs');
             const { data } = await github.rest.repos.getContent({
-              owner: "dominosoft-org",
+              owner: context.repo.owner,
               repo: "actions-test",
               path: "license-whitelist.json",
               ref: "main"

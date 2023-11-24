@@ -7,7 +7,7 @@ on:
         required: true
     inputs:
       solution_directory:
-        description: 'slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）'
+        description: "slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）"
         type: string
         required: true
     outputs:
@@ -23,11 +23,9 @@ jobs:
     runs-on: windows-latest
     outputs:
       comment: ${{ steps.create_comment.outputs.result }}
-
     steps:
       - name: 💼 Checkout
         uses: actions/checkout@v4
-
       - name: ⚡ Setup Nuget Cache
         uses: actions/cache@v3
         with:
@@ -35,20 +33,16 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-
       - name: 🖥️ Setup MSBuild
         uses: microsoft/setup-msbuild@v1
-
       - name: 🖥️ Setup VSTest
         uses: darenm/Setup-VSTest@v1.2
-
       - name: ⚖️ Unit Test
         run: |
           cd ./${{ inputs.solution_directory }}
           dotnet restore --configfile "github-actions-nuget.config"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet
           vstest.console.exe /Platform:x64 /InIsolation /Blame /Logger:trx /Enablecodecoverage ".\tests\NeuroFramework.*\bin\Release\net7.0\**.Tests.dll" /Collect:"Code Coverage;Format=Cobertura"
-
       - name: 📝 Reporting
         if: ${{ !cancelled() }}
         id: test_report
@@ -61,7 +55,6 @@ jobs:
           only-summary: "false"
           list-suites: "all"
           list-tests: "all"
-
       - name: 🖊️ Create Comment
         if: ${{ !cancelled() }}
         id: create_comment
@@ -70,14 +63,12 @@ jobs:
           result-encoding: string
           script: |
             return "**${{ steps.test_report.outputs.runHtmlUrl }}**\n\n";
-
       - name: ⬆️ Upload Artifact
         uses: actions/upload-artifact@v3
         if: ${{ !cancelled() }}
         with:
           name: code coverage report
           path: ./${{ inputs.solution_directory }}/TestResults/**/In/**/*.cobertura.xml
-
   code_coverage_report:
     needs: unit_test
     runs-on: ubuntu-latest
@@ -90,7 +81,6 @@ jobs:
         with:
           name: code coverage report
           path: coveragereport/
-
       - name: 📝 Reporting
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
@@ -103,7 +93,6 @@ jobs:
           indicators: true
           output: both
           thresholds: "60 80"
-
       - name: 🖊️ Create Comment
         if: ${{ !cancelled() }}
         id: create_comment
@@ -113,7 +102,6 @@ jobs:
           script: |
             const { readFileSync } = require('fs');
             return readFileSync('./code-coverage-results.md').toString() + "\n\n";
-
   merge_comment:
     needs: [unit_test, code_coverage_report]
     runs-on: ubuntu-latest

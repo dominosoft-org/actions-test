@@ -33,13 +33,11 @@ jobs:
     uses: ./.github/workflows/2_nuget_publish_fakes.yaml
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_fakes == 'true' }}
     secrets:
-      REPO_ACCOUNT: ${{  secrets.REPO_ACCOUNT  }}
-      REPO_ACCESS_TOKEN: ${{  secrets.REPO_ACCESS_TOKEN  }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
 
   publish_common:
     needs: [changes, publish_fakes]
     uses: ./.github/workflows/2_nuget_publish_common.yaml
     if: ${{ github.event_name == 'workflow_dispatch' || (!cancelled() && needs.changes.outputs.back_common == 'true') }}
     secrets:
-      REPO_ACCOUNT: ${{  secrets.REPO_ACCOUNT  }}
-      REPO_ACCESS_TOKEN: ${{  secrets.REPO_ACCESS_TOKEN  }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}

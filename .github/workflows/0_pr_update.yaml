@@ -6,8 +6,7 @@ on:
     branches:
       - "main"
     types:
-      - opened
-      - synchronize
+      - review_requested
     # pathsによるfilterは、dorny/paths-filterで行う
 
 jobs:
@@ -42,23 +41,21 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_common == 'true' }}
     uses: ./.github/workflows/1_back_common.yaml
     secrets:
-      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
-      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
 
   back_csproj:
     needs: changes
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.back_csproj == 'true' }}
     uses: ./.github/workflows/1_back_csproj.yaml
     secrets:
-      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
-      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
 
   front:
     needs: changes
     if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.front == 'true' }}
     uses: ./.github/workflows/1_front.yaml
     secrets:
-      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
 
   front_pnpm:
     needs: changes

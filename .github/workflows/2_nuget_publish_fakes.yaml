@@ -3,14 +3,12 @@ name: 2_nuget_publish_fakes
 on:
   workflow_call:
     secrets:
-      REPO_ACCOUNT:
-        required: true
-      REPO_ACCESS_TOKEN:
+      OWNER_ACCESS_TOKEN:
         required: true
 
 env:
-  GITHUB_ACCOUNT: ${{  secrets.REPO_ACCOUNT  }}
-  GITHUB_PKG_NFW_AUTH_TOKEN: ${{  secrets.REPO_ACCESS_TOKEN  }}
+  GITHUB_ACCOUNT: ${{ github.repository_owner }}
+  GITHUB_PKG_NFW_AUTH_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
 
 jobs:
   version_increment:
@@ -60,6 +58,6 @@ jobs:
         uses: tanaka-takayoshi/nuget-publish-to-github-packages-action@v2.1
         with:
           nupkg-path: '.\backend\FakesAssemblies\**\*.nupkg'
-          repo-owner: ${{  secrets.REPO_ACCOUNT  }}
-          gh-user: ${{  secrets.REPO_ACCOUNT  }}
-          token: ${{  secrets.REPO_ACCESS_TOKEN  }}
+          repo-owner: ${{ github.repository_owner }}
+          gh-user: ${{ github.repository_owner }}
+          token: ${{ secrets.OWNER_ACCESS_TOKEN }}

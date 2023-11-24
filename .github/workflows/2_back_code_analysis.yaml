@@ -3,9 +3,7 @@ name: 2_back_code_analysis
 on:
   workflow_call:
     secrets:
-      REPO_ACCOUNT:
-        required: true
-      REPO_ACCESS_TOKEN:
+      OWNER_ACCESS_TOKEN:
         required: true
     inputs:
       solution_directory:
@@ -20,8 +18,8 @@ on:
       comment:
         value: ${{ jobs.code_analysis.outputs.comment }}
 env:
-  GITHUB_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
-  GITHUB_PKG_NFW_AUTH_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+  GITHUB_ACCOUNT: ${{ github.repository_owner }}
+  GITHUB_PKG_NFW_AUTH_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
 
 jobs:
   code_analysis:

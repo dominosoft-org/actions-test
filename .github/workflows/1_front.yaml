@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   workflow_call:
     secrets:
-      REPO_ACCESS_TOKEN:
+      OWNER_ACCESS_TOKEN:
         required: true
     outputs:
       comment:
@@ -17,4 +17,4 @@ jobs:
       location: frontend
       path: frontend
     secrets:
-      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}

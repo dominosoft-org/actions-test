@@ -3,9 +3,7 @@ name: 2_back_unit_test
 on:
   workflow_call:
     secrets:
-      REPO_ACCOUNT:
-        required: true
-      REPO_ACCESS_TOKEN:
+      OWNER_ACCESS_TOKEN:
         required: true
     inputs:
       solution_directory:
@@ -17,8 +15,8 @@ on:
         value: ${{  jobs.merge_comment.outputs.comment  }}
 
 env:
-  GITHUB_ACCOUNT: ${{  secrets.REPO_ACCOUNT  }}
-  GITHUB_PKG_NFW_AUTH_TOKEN: ${{  secrets.REPO_ACCESS_TOKEN  }}
+  GITHUB_ACCOUNT: ${{ github.repository_owner }}
+  GITHUB_PKG_NFW_AUTH_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
 
 jobs:
   unit_test:

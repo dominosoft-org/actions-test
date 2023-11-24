@@ -3,7 +3,7 @@ name: 2_semgrep
 on:
   workflow_call:
     secrets:
-      REPO_ACCESS_TOKEN:
+      OWNER_ACCESS_TOKEN:
         required: true
     inputs:
       location:
@@ -28,7 +28,7 @@ jobs:
         id: create-command
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          github-token: ${{ secrets.OWNER_ACCESS_TOKEN }}
           result-encoding: string
           script: |
             const { readFileSync } = require('fs');

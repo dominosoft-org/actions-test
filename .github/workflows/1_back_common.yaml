@@ -4,9 +4,7 @@ on:
   workflow_dispatch:
   workflow_call:
     secrets:
-      REPO_ACCOUNT:
-        required: true
-      REPO_ACCESS_TOKEN:
+      OWNER_ACCESS_TOKEN:
         required: true
     outputs:
       comment:
@@ -19,7 +17,7 @@ jobs:
       location: backend
       path: backend/NeuroFramework.Common/src
     secrets:
-      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
 
   code_analysis:
     uses: ./.github/workflows/2_back_code_analysis.yaml
@@ -27,16 +25,14 @@ jobs:
       solution_directory: backend/NeuroFramework.Common
       solution_filename: Common.sln
     secrets:
-      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
-      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
 
   unit_test:
     uses: ./.github/workflows/2_back_unit_test.yaml
     with:
       solution_directory: backend/NeuroFramework.Common
     secrets:
-      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
-      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
 
   create_comment:
     if: always()

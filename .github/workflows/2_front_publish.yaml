@@ -3,9 +3,7 @@ name: 2_front_publish
 on:
   workflow_call:
     secrets:
-      REPO_ACCOUNT:
-        required: true
-      REPO_ACCESS_TOKEN:
+      OWNER_ACCESS_TOKEN:
         required: true
 
 jobs:
@@ -41,5 +39,4 @@ jobs:
     with:
       frontend_dir_name: ${{ matrix.dir }}
     secrets:
-      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
-      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}

@@ -4,9 +4,7 @@ on:
   workflow_dispatch:
   workflow_call:
     secrets:
-      REPO_ACCOUNT:
-        required: true
-      REPO_ACCESS_TOKEN:
+      OWNER_ACCESS_TOKEN:
         required: true
     outputs:
       comment:
@@ -18,6 +16,5 @@ jobs:
     with:
       solution_directory: backend/NeuroFramework.Common
     secrets:
-      REPO_ACCOUNT: ${{ secrets.REPO_ACCOUNT }}
-      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
   

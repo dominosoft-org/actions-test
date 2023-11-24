@@ -33,7 +33,7 @@ jobs:
           script: |
             const { readFileSync } = require('fs');
             const { data } = await github.rest.repos.getContent({
-              owner: constext.repo.owner,
+              owner: context.repo.owner,
               repo: "actions-test",
               path: "devtools/semgrep/semgrep-${{ inputs.location }}.config",
               ref: "main"

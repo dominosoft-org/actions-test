@@ -21,7 +21,7 @@ on:
         value: ${{ jobs.check.outputs.result }}
 
 jobs:
-  check:
+  sonar_scan:
     runs-on: windows-latest
     outputs:
       result: ${{ steps.create_comment.outputs.result }}
@@ -43,8 +43,8 @@ jobs:
           dotnet new tool-manifest
           dotnet tool install --local dotnet-sonarscanner
       - name: 👀 Sonar scan
-        id: sonar_scan
-        run:
+        id: scan
+        run: |
           cd ./${{ inputs.solution_directory }}
           dotnet restore --configfile "github-actions-nuget.config"
           dotnet sonarscanner begin /k:"${{ inputs.sonar_project }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"

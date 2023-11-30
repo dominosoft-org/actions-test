@@ -17,7 +17,7 @@ on:
         value: ${{ jobs.check.outputs.result }}
 
 jobs:
-  check:
+  sonar_scan:
     runs-on: ubuntu-latest
     outputs:
       result: ${{ steps.create_comment.outputs.result }}
@@ -25,7 +25,7 @@ jobs:
       - name: 💼 Checkout
         uses: actions/checkout@v4
       - name: 👀 Sonar scan
-        id: sonar_scan
+        id: scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

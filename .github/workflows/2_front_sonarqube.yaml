@@ -8,6 +8,10 @@ on:
       SONAR_HOST_URL:
         required: true
     inputs:
+      solution_directory:
+        description: "frontendフォルダーへのパス（workspaceパスからの相対パス）"
+        type: string
+        required: true
       sonar_project:
         description: "SonaQubeのプロジェクト名"
         type: string
@@ -27,7 +31,7 @@ jobs:
       - name: 👀 Sonar scan
         id: check
         uses: sonarsource/sonarqube-scan-action@master
-        working-directory: ${{env.GITHUB_WORKSPACE}}/frontend
+        working-directory: ${{inputs.solution_directory}}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

@@ -25,6 +25,7 @@ jobs:
   sonarqube:
     uses: ./.github/workflows/2_front_sonarqube.yaml
     with:
+      solution_directory: frontend
       sonar_project: nfw-common-frontend
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

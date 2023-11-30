@@ -100,6 +100,86 @@ export class LoggerImpl implements Logger {
   private async _store() {
     if (this.db == undefined) return;
     if (this.logsQueue.length === 0) return;
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
+    if (this.logsQueue.length == 1) {
+      console.error("err");
+    } else {
+      console.error("err2");
+    }
     try {
       while (this.logsQueue.length > 0) {
         const record = this.logsQueue.shift();

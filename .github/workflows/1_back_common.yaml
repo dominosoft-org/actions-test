@@ -8,8 +8,6 @@ on:
         required: true
       SONAR_TOKEN:
         required: true
-      SONAR_HOST_URL:
-        required: true
     outputs:
       comment:
         value: ${{ jobs.create_comment.outputs.comment }}
@@ -29,7 +27,6 @@ jobs:
       sonar_project: nfw-common-backend
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
   code_analysis:
     uses: ./.github/workflows/2_back_code_analysis.yaml
     with:

@@ -8,8 +8,6 @@ on:
         required: true
       SONAR_TOKEN:
         required: true
-      SONAR_HOST_URL:
-        required: true
     outputs:
       comment:
         value: ${{ jobs.semgrep.outputs.comment }} \n\n ${{ jobs.sonaqube.outputs.comment }}
@@ -28,4 +26,3 @@ jobs:
       sonar_project: nfw-common-frontend
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

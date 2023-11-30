@@ -5,8 +5,6 @@ on:
     secrets:
       SONAR_TOKEN:
         required: true
-      SONAR_HOST_URL:
-        required: true
     inputs:
       solution_directory:
         description: "slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）"

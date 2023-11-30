@@ -18,7 +18,7 @@ on:
         required: true
     outputs:
       result:
-        value: ${{ jobs.check.outputs.result }}
+        value: ${{ jobs.sonar_scan.outputs.result }}
 
 jobs:
   sonar_scan:

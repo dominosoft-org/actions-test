@@ -45,7 +45,7 @@ jobs:
           cd ./${{ inputs.solution_directory }}
           dotnet restore
           dotnet sonarscanner begin /k:"${{ inputs.sonar_project }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
-          msbuild -m -p:Configuration=Release -p:IsGithubActions=true
+          msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet
           dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
       - name: 🖊️ Create Comment
         id: create_comment

@@ -86,6 +86,6 @@ jobs:
     needs: create_comment
     if: ${{ always() && needs.create_comment.outputs.comment != '' }}
     uses: ./.github/workflows/2_post_comment.yaml
-      with:
+    with:
       title: ":octocat: Code Summary"
       comment: "${{ needs.create_comment.outputs.comment }}"

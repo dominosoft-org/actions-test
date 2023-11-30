@@ -56,6 +56,7 @@ jobs:
           dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
       - name: 🖊️ Create Comment
         id: create_comment
+        if: always()
         uses: actions/github-script@v7
         with:
           result-encoding: string

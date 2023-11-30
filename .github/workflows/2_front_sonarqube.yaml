@@ -1,0 +1,42 @@
+name: 2_front_sonarqube
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+      SONAR_HOST_URL:
+        required: true
+    inputs:
+      sonar_project:
+        description: "SonaQubeのプロジェクト名"
+        type: string
+        required: true
+    outputs:
+      result:
+        value: ${{ jobs.check.outputs.result }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.create_comment.outputs.result }}
+    steps:
+      - name: 💼 Checkout
+        uses: actions/checkout@v4
+      - name: 👀 Sonar scan
+        id: check
+        uses: sonarsource/sonarqube-scan-action@master
+        working-directory: ${{env.GITHUB_WORKSPACE}}/frontend
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: 🖊️ Create Comment
+        id: create_comment
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            let result = "### :cyclone: Frontend Cognitive Complexity Check\n\n"
+            result += "${{ secrets.SONAR_HOST_URL }}/dashboard?id=${{ inputs.sonar_project }}\nLogin account: browse"
+            return result;

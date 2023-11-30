@@ -1,0 +1,58 @@
+name: 2_back_sonarqube
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+      SONAR_HOST_URL:
+        required: true
+    inputs:
+      solution_directory:
+        description: "slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）"
+        type: string
+        required: true
+      sonar_project:
+        description: "SonaQubeのプロジェクト名"
+        type: string
+        required: true
+    outputs:
+      result:
+        value: ${{ jobs.check.outputs.result }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.create_comment.outputs.result }}
+    steps:
+      - name: 💼 Checkout
+        uses: actions/checkout@v4
+      - name: 🔧 Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.x
+      - name: 🖥️ Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+      - name: 🚀 Install dotnet-sonarscanner tool
+        run: |
+          cd ./${{ inputs.solution_directory }}
+          dotnet new tool-manifest
+          dotnet tool install --local dotnet-sonarscanner
+      - name: 👀 Sonar scan
+        id: check
+        run:
+          cd ./${{ inputs.solution_directory }}
+          dotnet restore
+          dotnet sonarscanner begin /k:"${{ inputs.sonar_project }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+          msbuild -m -p:Configuration=Release -p:IsGithubActions=true
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      - name: 🖊️ Create Comment
+        id: create_comment
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            let result = "### :cyclone: Backend Cognitive Complexity Check\n\n"
+            result += "${{ secrets.SONAR_HOST_URL }}/dashboard?id=${{ inputs.sonar_project }}\nLogin account: browse"
+            return result;

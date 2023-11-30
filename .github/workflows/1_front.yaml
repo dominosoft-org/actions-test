@@ -6,9 +6,13 @@ on:
     secrets:
       OWNER_ACCESS_TOKEN:
         required: true
+      SONAR_TOKEN:
+        required: true
+      SONAR_HOST_URL:
+        required: true
     outputs:
       comment:
-        value: ${{ jobs.semgrep.outputs.comment }}
+        value: ${{ jobs.semgrep.outputs.comment }} \n\n ${{ jobs.sonaqube.outputs.comment }}
 
 jobs:
   semgrep:
@@ -18,3 +22,10 @@ jobs:
       path: frontend
     secrets:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
+  sonarqube:
+    uses: ./.github/workflows/2_front_sonarqube.yaml
+    with:
+      sonar_project: nfw-common-frontend
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

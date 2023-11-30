@@ -28,10 +28,13 @@ jobs:
     steps:
       - name: 💼 Checkout
         uses: actions/checkout@v4
-      - name: 🔧 Setup .NET
-        uses: actions/setup-dotnet@v3
+      - name: ⚡ Setup Nuget Cache
+        uses: actions/cache@v3
         with:
-          dotnet-version: 7.x
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
       - name: 🖥️ Setup MSBuild
         uses: microsoft/setup-msbuild@v1
       - name: 🚀 Install dotnet-sonarscanner tool
@@ -40,10 +43,10 @@ jobs:
           dotnet new tool-manifest
           dotnet tool install --local dotnet-sonarscanner
       - name: 👀 Sonar scan
-        id: check
+        id: sonar_scan
         run:
           cd ./${{ inputs.solution_directory }}
-          dotnet restore
+          dotnet restore --configfile "github-actions-nuget.config"
           dotnet sonarscanner begin /k:"${{ inputs.sonar_project }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet
           dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

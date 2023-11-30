@@ -25,7 +25,7 @@ jobs:
       - name: 💼 Checkout
         uses: actions/checkout@v4
       - name: 👀 Sonar scan
-        id: check
+        id: sonar_scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

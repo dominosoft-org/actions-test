@@ -62,5 +62,4 @@ jobs:
           result-encoding: string
           script: |
             let result = "### :cyclone: Backend Cognitive Complexity Check\n\n"
-            result += "${{ secrets.SONAR_HOST_URL }}/dashboard?id=${{ inputs.sonar_project }}\nLogin account: browse"
             return result;

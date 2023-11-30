@@ -35,6 +35,6 @@ jobs:
           result-encoding: string
           script: |
             let result = "### :cyclone: Frontend Cognitive Complexity Check\n\n"
-            result += "- [Refactor this function to reduce its Cognitive Complexity from XX to the 15 allowed. の警告が出ない状態にすること](https://sonarqube4nfw.azurewebsites.net/project/issues?resolved=false&impactSeverities=HIGH&impactSoftwareQualities=MAINTAINABILITY&id=${{ inputs.sonar_project }})"
-            result += "- [触ったファイルのCognitive Complexityが100を超えていたら修正すること](https://sonarqube4nfw.azurewebsites.net/component_measures?metric=cognitive_complexity&id=${{ inputs.sonar_project }})"
+            result += "- [Refactor this function to reduce its Cognitive Complexity from XX to the 15 allowed. の警告が出たら要修正](https://sonarqube4nfw.azurewebsites.net/project/issues?resolved=false&impactSeverities=HIGH&impactSoftwareQualities=MAINTAINABILITY&id=${{ inputs.sonar_project }})\n"
+            result += "- [変更したファイルのCognitive Complexityが100を超えていたら要修正](https://sonarqube4nfw.azurewebsites.net/component_measures?metric=cognitive_complexity&id=${{ inputs.sonar_project }})"
             return result;

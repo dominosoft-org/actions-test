@@ -1,0 +1,40 @@
+name: 2_front_sonarqube
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+    inputs:
+      sonar_project:
+        description: "SonaQubeのプロジェクト名"
+        type: string
+        required: true
+    outputs:
+      comment:
+        value: ${{ jobs.sonar_scan.outputs.result }}
+
+jobs:
+  sonar_scan:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.create_comment.outputs.result }}
+    steps:
+      - name: 💼 Checkout
+        uses: actions/checkout@v4
+      - name: 👀 Sonar scan
+        id: scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarqube4nfw.azurewebsites.net
+      - name: 🖊️ Create Comment
+        id: create_comment
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            let result = "### :cyclone: Frontend Cognitive Complexity Analysis\n\n"
+            result += "- [Refactor this function to reduce its Cognitive Complexity from XX to the 15 allowed. の警告が出たら要修正](https://sonarqube4nfw.azurewebsites.net/project/issues?resolved=false&impactSeverities=HIGH&impactSoftwareQualities=MAINTAINABILITY&id=${{ inputs.sonar_project }})\n"
+            result += "- [変更したファイルのCognitive Complexityが100を超えていたら要修正](https://sonarqube4nfw.azurewebsites.net/component_measures?metric=cognitive_complexity&id=${{ inputs.sonar_project }})"
+            return result;

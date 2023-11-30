@@ -1,0 +1,64 @@
+name: 2_back_sonarqube
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+    inputs:
+      solution_directory:
+        description: "slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）"
+        type: string
+        required: true
+      sonar_project:
+        description: "SonaQubeのプロジェクト名"
+        type: string
+        required: true
+    outputs:
+      comment:
+        value: ${{ jobs.sonar_scan.outputs.result }}
+
+jobs:
+  sonar_scan:
+    runs-on: windows-latest
+    outputs:
+      result: ${{ steps.create_comment.outputs.result }}
+    steps:
+      - name: 💼 Checkout
+        uses: actions/checkout@v4
+      - name: ⚡ Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: ⚡ Setup Nuget Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      - name: 🖥️ Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+      - name: 🚀 Install dotnet-sonarscanner tool
+        run: |
+          cd ./${{ inputs.solution_directory }}
+          dotnet new tool-manifest
+          dotnet tool install --local dotnet-sonarscanner
+      - name: 👀 Sonar scan
+        id: scan
+        run: |
+          cd ./${{ inputs.solution_directory }}
+          dotnet restore --configfile "github-actions-nuget.config"
+          dotnet sonarscanner begin /k:"${{ inputs.sonar_project }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarqube4nfw.azurewebsites.net"
+          msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      - name: 🖊️ Create Comment
+        id: create_comment
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            let result = "### :cyclone: Backend Cognitive Complexity Analysis\n\n"
+            result += "- [Refactor this function to reduce its Cognitive Complexity from XX to the 15 allowed. の警告が出たら要修正](https://sonarqube4nfw.azurewebsites.net/project/issues?resolved=false&impactSeverities=HIGH&impactSoftwareQualities=MAINTAINABILITY&id=${{ inputs.sonar_project }})\n"
+            result += "- [変更したファイルのCognitive Complexityが100を超えていたら要修正](https://sonarqube4nfw.azurewebsites.net/component_measures?metric=cognitive_complexity&id=${{ inputs.sonar_project }})"
+            return result;

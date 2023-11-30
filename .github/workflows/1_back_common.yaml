@@ -6,6 +6,8 @@ on:
     secrets:
       OWNER_ACCESS_TOKEN:
         required: true
+      SONAR_TOKEN:
+        required: true
     outputs:
       comment:
         value: ${{ jobs.create_comment.outputs.comment }}
@@ -18,6 +20,13 @@ jobs:
       path: backend/NeuroFramework.Common/src
     secrets:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
+  sonarqube:
+    uses: ./.github/workflows/2_back_sonarqube.yaml
+    with:
+      solution_directory: backend/NeuroFramework.Common
+      sonar_project: nfw-common-backend
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   code_analysis:
     uses: ./.github/workflows/2_back_code_analysis.yaml
     with:
@@ -33,7 +42,7 @@ jobs:
       OWNER_ACCESS_TOKEN: ${{ secrets.OWNER_ACCESS_TOKEN }}
   create_comment:
     if: always()
-    needs: [semgrep, code_analysis, unit_test]
+    needs: [semgrep, sonarqube, code_analysis, unit_test]
     runs-on: ubuntu-latest
     outputs:
       comment: ${{ steps.comment.outputs.result }}
@@ -46,6 +55,7 @@ jobs:
           script: |
             const comments = [
               `${{ needs.semgrep.outputs.comment }}`,
+              `${{ needs.sonarqube.outputs.comment }}`,
               `${{ needs.code_analysis.outputs.comment }}`,
               `${{ needs.unit_test.outputs.comment }}`
             ]

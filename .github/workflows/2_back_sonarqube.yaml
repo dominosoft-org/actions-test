@@ -51,7 +51,7 @@ jobs:
         run: |
           cd ./${{ inputs.solution_directory }}
           dotnet restore --configfile "github-actions-nuget.config"
-          dotnet sonarscanner begin /k:"${{ inputs.sonar_project }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+          dotnet sonarscanner begin /k:"${{ inputs.sonar_project }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarqube4nfw.azurewebsites.net"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet
           dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
       - name: 🖊️ Create Comment
@@ -61,4 +61,5 @@ jobs:
           result-encoding: string
           script: |
             let result = "### :cyclone: Backend Cognitive Complexity Check\n\n"
+            result += "https://sonarqube4nfw.azurewebsites.net/dashboard?id=${{ inputs.sonar_project }}\nLogin account: browse"
             return result;

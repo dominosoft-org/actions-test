@@ -29,7 +29,7 @@ jobs:
         uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: https://sonarqube4nfw.azurewebsites.net
       - name: 🖊️ Create Comment
         id: create_comment
         uses: actions/github-script@v7
@@ -37,5 +37,5 @@ jobs:
           result-encoding: string
           script: |
             let result = "### :cyclone: Frontend Cognitive Complexity Check\n\n"
-            result += "${{ secrets.SONAR_HOST_URL }}/dashboard?id=${{ inputs.sonar_project }}\nLogin account: browse"
+            result += "https://sonarqube4nfw.azurewebsites.net/dashboard?id=${{ inputs.sonar_project }}\nLogin account: browse"
             return result;

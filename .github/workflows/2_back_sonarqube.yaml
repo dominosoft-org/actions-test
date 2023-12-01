@@ -7,7 +7,7 @@ on:
         required: true
     inputs:
       solution_directory:
-        description: "slnファイルが存在するフォルダへのパス（workspaceパスからの相対パス）"
+        description: "slnファイルが存在するフォルダーへのパス（workspaceパスからの相対パス）"
         type: string
         required: true
       sonar_project:

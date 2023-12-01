@@ -50,6 +50,7 @@ jobs:
         id: scan
         run: |
           cd ./${{ inputs.solution_directory }}
+          rmdir /s /q .sonarqube
           dotnet restore --configfile "github-actions-nuget.config"
           dotnet sonarscanner begin /k:"${{ inputs.sonar_project }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarqube4nfw.azurewebsites.net"
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet -t:Rebuild

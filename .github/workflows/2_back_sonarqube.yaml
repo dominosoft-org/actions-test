@@ -51,7 +51,7 @@ jobs:
         run: |
           cd ./${{ inputs.solution_directory }}
           dotnet restore --configfile "github-actions-nuget.config"
-          dotnet sonarscanner begin /k:"${{ inputs.sonar_project }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarqube4nfw.azurewebsites.net"
+          dotnet sonarscanner begin /k:"${{ inputs.sonar_project }}" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarqube4nfw.azurewebsites.net" /d:sonar.dotnet.excludeTestProjects=true /d:sonar.scm.forceReloadAll=true
           msbuild -m -p:Configuration=Release -p:IsGithubActions=true -verbosity:quiet -t:Rebuild
           dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
       - name: 🖊️ Create Comment

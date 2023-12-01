@@ -7,7 +7,7 @@ on:
         required: true
     inputs:
       sonar_project:
-        description: "SonaQubeのプロジェクト名"
+        description: "SonarQubeのプロジェクト名"
         type: string
         required: true
     outputs:

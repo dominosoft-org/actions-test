@@ -24,7 +24,7 @@ jobs:
     uses: ./.github/workflows/2_back_sonarqube.yaml
     with:
       solution_directory: backend/NeuroFramework.Common
-      sonar_project: nfw-common-backend
+      sonar_project: nfw-common-backend2
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   code_analysis:

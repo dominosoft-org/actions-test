@@ -11,7 +11,7 @@ on:
         type: string
         required: true
       sonar_project:
-        description: "SonaQubeのプロジェクト名"
+        description: "SonarQubeのプロジェクト名"
         type: string
         required: true
     outputs:
@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: 💼 Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: ⚡ Set up JDK 17
         uses: actions/setup-java@v1
         with:

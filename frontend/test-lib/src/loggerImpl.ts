@@ -100,7 +100,6 @@ export class LoggerImpl implements Logger {
   private async _store() {
     if (this.db == undefined) return;
     if (this.logsQueue.length === 0) return;
-    if (this.logsQueue.length === 1) return;
     try {
       while (this.logsQueue.length > 0) {
         const record = this.logsQueue.shift();
